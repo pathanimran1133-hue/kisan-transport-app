@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.1.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "NSimSun", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;FC CONTRACTOR &amp; TRANSPORT&lt;/title&gt;
+  &lt;script src=&quot;https://unpkg.com/react@18/umd/react.production.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://unpkg.com/react-dom@18/umd/react-dom.production.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://unpkg.com/@babel/standalone/babel.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f6f8; }
+    .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    input, select, button { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background-color: #0056b3; color: white; border: none; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #004085; }
+    .header { background: #1a365d; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-logout { background: #d9534f; width: auto; padding: 8px 15px; }
+    .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+    .summary-card { background: white; padding: 15px; border-radius: 6px; border-left: 5px solid #0056b3; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/babel&quot;&gt;
+const { useState } = React;
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [userRole, setUserRole] = useState('');
+
+  const [tripData, setTripData] = useState({
+    date: '', village: '', wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0,
+    remainingBags: 0, freightEarned: 0, expenseAmount: 0, expenseReason: ''
+  });
+
+  const [ledger, setLedger] = useState([
+    { id: 1, date: '2026-08-20', village: 'Palam Market', wheatBags: 150, riceBags: 100, sugarBags: 50, otherBags: 0, totalBags: 300, remainingBags: 10, freightEarned: 15000, expenseAmount: 2000, expenseReason: 'Diesel &amp; Toll' }
+  ]);
+
+  const handleLogin = (e) =&gt; {
+    e.preventDefault();
+    if (username === 'admin' &amp;&amp; password === 'Admin@123') {
+      setUserRole('District Admin');
+      setIsLoggedIn(true);
+    } else if (username === 'operator' &amp;&amp; password === 'Operator@123') {
+      setUserRole('Palam Operator');
+      setIsLoggedIn(true);
+    } else {
+      alert('Galat Username ya Password!');
+    }
+  };
+
+  const handleAddTrip = (e) =&gt; {
+    e.preventDefault();
+    const totalBags = Number(tripData.wheatBags) + Number(tripData.riceBags) + Number(tripData.sugarBags) + Number(tripData.otherBags);
+    const newEntry = {
+      id: Date.now(),
+      ...tripData,
+      totalBags,
+      freightEarned: Number(tripData.freightEarned),
+      expenseAmount: Number(tripData.expenseAmount),
+      remainingBags: Number(tripData.remainingBags)
+    };
+    setLedger([newEntry, ...ledger]);
+    alert('Trip Entry Save Ho Gayi!');
+  };
+
+  const totalFreight = ledger.reduce((acc, item) =&gt; acc + item.freightEarned, 0);
+  const totalExpenses = ledger.reduce((acc, item) =&gt; acc + item.expenseAmount, 0);
+  const netProfit = totalFreight - totalExpenses;
+
+  if (!isLoggedIn) {
+    return (
+      &lt;div class=&quot;login-container&quot;&gt;
+        &lt;div class=&quot;card&quot; style={{width: '320px', textAlign: 'center'}}&gt;
+          &lt;h2&gt;FC CONTRACTOR &amp; TRANSPORT&lt;/h2&gt;
+          &lt;p style={{color: '#666'}}&gt;Palam, Parbhani&lt;/p&gt;
+          &lt;form onSubmit={handleLogin}&gt;
+            &lt;input type=&quot;text&quot; placeholder=&quot;Username&quot; value={username} onChange={e=&gt;setUsername(e.target.value)} required /&gt;
+            &lt;input type=&quot;password&quot; placeholder=&quot;Password&quot; value={password} onChange={e=&gt;setPassword(e.target.value)} required /&gt;
+            &lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;div class=&quot;header&quot;&gt;
+        &lt;div&gt;
+          &lt;h2 style={{margin:0}}&gt;FC CONTRACTOR &amp; TRANSPORT&lt;/h2&gt;
+          &lt;small&gt;Role: {userRole}&lt;/small&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;btn-logout&quot; onClick={()=&gt;setIsLoggedIn(false)}&gt;Logout&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div style={{padding: '20px', maxWidth: '1200px', margin: '0 auto'}}&gt;
+        &lt;div class=&quot;card&quot;&gt;
+          &lt;h3&gt;New Trip Entry&lt;/h3&gt;
+          &lt;form onSubmit={handleAddTrip} class=&quot;grid-form&quot;&gt;
+            &lt;input type=&quot;date&quot; required value={tripData.date} onChange={e=&gt;setTripData({...tripData, date: e.target.value})} /&gt;
+            &lt;input type=&quot;text&quot; placeholder=&quot;Village Name&quot; required value={tripData.village} onChange={e=&gt;setTripData({...tripData, village: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Wheat Bags&quot; onChange={e=&gt;setTripData({...tripData, wheatBags: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Rice Bags&quot; onChange={e=&gt;setTripData({...tripData, riceBags: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Sugar Bags&quot; onChange={e=&gt;setTripData({...tripData, sugarBags: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Other Bags&quot; onChange={e=&gt;setTripData({...tripData, otherBags: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Remaining Bags&quot; onChange={e=&gt;setTripData({...tripData, remainingBags: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Freight Earned (â¹)&quot; onChange={e=&gt;setTripData({...tripData, freightEarned: e.target.value})} /&gt;
+            &lt;input type=&quot;number&quot; placeholder=&quot;Expense Amount (â¹)&quot; onChange={e=&gt;setTripData({...tripData, expenseAmount: e.target.value})} /&gt;
+            &lt;input type=&quot;text&quot; placeholder=&quot;Expense Reason&quot; onChange={e=&gt;setTripData({...tripData, expenseReason: e.target.value})} /&gt;
+            &lt;button type=&quot;submit&quot; style={{gridColumn: '1 / -1'}}&gt;Save Entry&lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;card&quot; style={{overflowX: 'auto'}}&gt;
+          &lt;h3&gt;Monthly Vehicle Ledger&lt;/h3&gt;
+          &lt;table&gt;
+            &lt;thead&gt;
+              &lt;tr&gt;
+                &lt;th&gt;S.No&lt;/th&gt;&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Village&lt;/th&gt;&lt;th&gt;Wheat&lt;/th&gt;&lt;th&gt;Rice&lt;/th&gt;&lt;th&gt;Sugar&lt;/th&gt;&lt;th&gt;Other&lt;/th&gt;&lt;th&gt;Total Bags&lt;/th&gt;&lt;th&gt;Remaining&lt;/th&gt;&lt;th&gt;Freight (â¹)&lt;/th&gt;&lt;th&gt;Expense (â¹)&lt;/th&gt;&lt;th&gt;Reason&lt;/th&gt;
+              &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+              {ledger.map((item, idx)=&gt;(
+                &lt;tr key={item.id}&gt;
+                  &lt;td&gt;{idx+1}&lt;/td&gt;&lt;td&gt;{item.date}&lt;/td&gt;&lt;td&gt;{item.village}&lt;/td&gt;&lt;td&gt;{item.wheatBags}&lt;/td&gt;&lt;td&gt;{item.riceBags}&lt;/td&gt;&lt;td&gt;{item.sugarBags}&lt;/td&gt;&lt;td&gt;{item.otherBags}&lt;/td&gt;&lt;td&gt;&lt;b&gt;{item.totalBags}&lt;/b&gt;&lt;/td&gt;&lt;td style={{color:'red'}}&gt;{item.remainingBags}&lt;/td&gt;&lt;td style={{color:'green'}}&gt;â¹{item.freightEarned}&lt;/td&gt;&lt;td style={{color:'orange'}}&gt;â¹{item.expenseAmount}&lt;/td&gt;&lt;td&gt;{item.expenseReason}&lt;/td&gt;
+                &lt;/tr&gt;
+              ))}
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;summary-grid&quot;&gt;
+          &lt;div class=&quot;summary-card&quot; style={{borderColor: 'green'}}&gt;
+            &lt;h4&gt;Total Freight&lt;/h4&gt;
+            &lt;h2&gt;â¹{totalFreight}&lt;/h2&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;summary-card&quot; style={{borderColor: 'orange'}}&gt;
+            &lt;h4&gt;Total Expenses&lt;/h4&gt;
+            &lt;h2&gt;â¹{totalExpenses}&lt;/h2&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;summary-card&quot; style={{borderColor: 'blue'}}&gt;
+            &lt;h4&gt;Net Profit&lt;/h4&gt;
+            &lt;h2&gt;â¹{netProfit}&lt;/h2&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(&lt;App /&gt;);
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
