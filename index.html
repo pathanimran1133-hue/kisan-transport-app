@@ -8,12 +8,22 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .app-header { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; padding: 15px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .card-custom { background: white; border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; padding: 20px; }
-    .stat-card { border-left: 5px solid; border-radius: 10px; background: white; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .table-responsive { border-radius: 8px; overflow: hidden; }
+    :root { --primary-color: #1e3a8a; --accent-color: #2563eb; --bg-color: #f8fafc; }
+    body { background-color: var(--bg-color); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e293b; }
+    .top-navbar { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid #3b82f6; }
+    .glass-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); padding: 20px; margin-bottom: 20px; }
+    .card-title-custom { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+    .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 14px; font-size: 0.95rem; }
+    .form-control:focus, .form-select:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+    .stat-box { border-radius: 14px; padding: 16px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: transform 0.2s; }
+    .stat-box:hover { transform: translateY(-2px); }
+    .badge-role { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(4px); color: #e2e8f0; font-weight: 500; font-size: 0.8rem; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+    .table-custom { font-size: 0.9rem; }
+    .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+    .btn-custom-primary { background-color: #2563eb; color: white; font-weight: 600; border-radius: 10px; padding: 10px 20px; border: none; }
+    .btn-custom-primary:hover { background-color: #1d4ed8; }
   </style>
 </head>
 <body>
@@ -29,25 +39,25 @@ function App() {
   const [password, setPassword] = useState('');
   const [userRole, setUserRole] = useState('');
 
-  // Masters
-  const [drivers] = useState(['Ramesh Kumar', 'Suresh Patil', 'Anil Shinde']);
-  const [vehicles] = useState(['MH-22-AA-1234', 'MH-22-B-5678', 'MH-22-C-9012']);
-  const [commodities, setCommodities] = useState(['Wheat', 'Rice', 'Sugar']);
+  const [drivers] = useState(['Ashok', 'Ramesh Kumar', 'Suresh Patil']);
+  const [vehicles] = useState(['MH 06AQ 6368', 'MH-22-AA-1234', 'MH-22-B-5678']);
+  const [commodities, setCommodities] = useState(['Wheat', 'Rice', 'Sugar', 'Jawar']);
   const [newCommodity, setNewCommodity] = useState('');
 
-  // Trip Entry Form
   const [tripData, setTripData] = useState({
     date: '2026-08-23', driver: '', vehicle: '', village: '',
-    grainQuantities: { Wheat: 0, Rice: 0, Sugar: 0 },
-    remainingBags: 0, freightEarned: 0, expenseAmount: 0, expenseReason: ''
+    grainQuantities: { Wheat: 0, Rice: 0, Sugar: 0, Jawar: 0 },
+    remainingBags: 0, freightEarned: '', expenseAmount: '', expenseReason: ''
   });
 
-  // Ledger & Audit Log
   const [ledger, setLedger] = useState([
-    { id: 1, date: '2026-08-20', driver: 'Ramesh Kumar', vehicle: 'MH-22-AA-1234', village: 'Palam Market', bags: { Wheat: 150, Rice: 100, Sugar: 50 }, totalBags: 300, remainingBags: 10, freightEarned: 15000, expenseAmount: 2000, expenseReason: 'Diesel & Toll' }
+    { id: 1, date: '2026-08-23', driver: 'Ashok', vehicle: 'MH 06AQ 6368', village: 'Parva', bags: { Wheat: 100, Rice: 120, Sugar: 1, Jawar: 0 }, totalBags: 221, remainingBags: 5, freightEarned: 5000, expenseAmount: 5000, expenseReason: 'Diesel' },
+    { id: 2, date: '2026-08-20', driver: 'Ramesh Kumar', vehicle: 'MH-22-AA-1234', village: 'Palam Market', bags: { Wheat: 150, Rice: 100, Sugar: 50, Jawar: 0 }, totalBags: 300, remainingBags: 10, freightEarned: 15000, expenseAmount: 2000, expenseReason: 'Diesel & Toll' }
   ]);
+
   const [auditLogs, setAuditLogs] = useState([
-    { id: 1, time: '2026-08-20 10:00 AM', user: 'Palam Operator', action: 'Created initial entry for Palam Market' }
+    { id: 1, time: '2026-08-23 12:31:25', user: 'District Admin', action: 'Added new trip for Parva (Vehicle: MH 06AQ 6368, Total Bags: 221)' },
+    { id: 2, time: '2026-08-20 10:00:00', user: 'Palam Operator', action: 'Created initial entry for Palam Market' }
   ]);
 
   const handleLogin = (e) => {
@@ -92,16 +102,15 @@ function App() {
 
     setLedger([newEntry, ...ledger]);
 
-    // Audit Log Entry
     const log = {
       id: Date.now(),
       time: new Date().toLocaleString(),
       user: userRole,
-      action: `Added new trip for ${tripData.village || 'N/A'} (Vehicle: ${tripData.vehicle || 'N/A'}, Total Bags: ${totalBags})`
+      action: `Added trip for ${tripData.village || 'N/A'} (Vehicle: ${tripData.vehicle || 'N/A'}, Bags: ${totalBags})`
     };
     setAuditLogs([log, ...auditLogs]);
 
-    alert('Trip Entry Successfully Saved!');
+    alert('Entry Save Ho Gayi!');
   };
 
   const totalFreight = ledger.reduce((acc, item) => acc + item.freightEarned, 0);
@@ -110,14 +119,23 @@ function App() {
 
   if (!isLoggedIn) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="card-custom text-center" style={{ width: '350px' }}>
-          <h3 className="fw-bold text-primary mb-1">FC CONTRACTOR</h3>
-          <p className="text-muted small">Transport & Grain Ledger System</p>
-          <form onSubmit={handleLogin} className="mt-4">
-            <input type="text" className="form-control mb-3" placeholder="Username" value={username} onChange={e=>setUsername(e.target.value)} required />
-            <input type="password" className="form-control mb-3" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} required />
-            <button type="submit" className="btn btn-primary w-100 fw-bold">LOGIN</button>
+      <div className="d-flex justify-content-center align-items-center vh-100" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)' }}>
+        <div className="glass-card text-center p-4" style={{ width: '360px', borderRadius: '20px' }}>
+          <div className="mb-3">
+            <i className="fa-solid fa-truck-front text-primary fa-3x"></i>
+          </div>
+          <h4 className="fw-bold text-dark mb-1">FC CONTRACTOR</h4>
+          <p className="text-muted small mb-4">Transport & Grain Ledger Management</p>
+          <form onSubmit={handleLogin}>
+            <div className="mb-3 text-start">
+              <label className="form-label small fw-semibold text-secondary">Username</label>
+              <input type="text" className="form-control" placeholder="Enter username" value={username} onChange={e=>setUsername(e.target.value)} required />
+            </div>
+            <div className="mb-4 text-start">
+              <label className="form-label small fw-semibold text-secondary">Password</label>
+              <input type="password" className="form-control" placeholder="Enter password" value={password} onChange={e=>setPassword(e.target.value)} required />
+            </div>
+            <button type="submit" className="btn btn-custom-primary w-100 py-2">LOGIN TO DASHBOARD</button>
           </form>
         </div>
       </div>
@@ -126,118 +144,176 @@ function App() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="app-header d-flex justify-content-between align-items-center">
+      {/* Top Navbar */}
+      <div className="top-navbar d-flex justify-content-between align-items-center">
         <div>
-          <h4 className="m-0 fw-bold">FC CONTRACTOR & TRANSPORT</h4>
-          <span className="badge bg-light text-dark mt-1">Role: {userRole}</span>
+          <h5 className="m-0 fw-bold"><i className="fa-solid fa-truck-moving me-2"></i>FC CONTRACTOR & TRANSPORT</h5>
+          <span className="badge-role mt-1 d-inline-block"><i className="fa-solid fa-user-shield me-1"></i>Role: {userRole}</span>
         </div>
-        <button className="btn btn-danger btn-sm" onClick={()=>setIsLoggedIn(false)}>Logout</button>
+        <button className="btn btn-outline-light btn-sm rounded-pill px-3" onClick={()=>setIsLoggedIn(false)}>
+          <i className="fa-solid fa-right-from-bracket me-1"></i> Logout
+        </button>
       </div>
 
-      <div className="container my-4">
-        {/* Dynamic Commodity Master */}
-        <div className="card-custom">
-          <h5 className="fw-bold text-dark mb-3">🌾 Add New Commodity / Grain</h5>
-          <div className="row g-2">
-            <div className="col-8 col-md-4">
-              <input type="text" className="form-control" placeholder="e.g. Gram, Pulses, Bajra" value={newCommodity} onChange={e=>setNewCommodity(e.target.value)} />
-            </div>
-            <div className="col-4 col-md-2">
-              <button className="btn btn-success w-100 fw-bold" onClick={handleAddCommodity}>+ Add</button>
-            </div>
-          </div>
-        </div>
-
-        {/* New Trip Entry Form */}
-        <div className="card-custom">
-          <h5 className="fw-bold text-dark mb-3">🚛 New Trip Entry</h5>
-          <form onSubmit={handleAddTrip}>
-            <div className="row g-3">
-              <div className="col-md-3">
-                <label className="form-label small fw-bold">Date</label>
-                <input type="date" className="form-control" value={tripData.date} onChange={e=>setTripData({...tripData, date: e.target.value})} required />
-              </div>
-              <div className="col-md-3">
-                <label className="form-label small fw-bold">Driver Name (Autocomplete)</label>
-                <input type="text" list="driverList" className="form-control" placeholder="Select/Type Driver" onChange={e=>setTripData({...tripData, driver: e.target.value})} required />
-                <datalist id="driverList">
-                  {drivers.map((d, i)=><option key={i} value={d} />)}
-                </datalist>
-              </div>
-              <div className="col-md-3">
-                <label className="form-label small fw-bold">Vehicle Number</label>
-                <input type="text" list="vehicleList" className="form-control" placeholder="Select/Type Vehicle" onChange={e=>setTripData({...tripData, vehicle: e.target.value})} required />
-                <datalist id="vehicleList">
-                  {vehicles.map((v, i)=><option key={i} value={v} />)}
-                </datalist>
-              </div>
-              <div className="col-md-3">
-                <label className="form-label small fw-bold">Village Name</label>
-                <input type="text" className="form-control" placeholder="Village Name" onChange={e=>setTripData({...tripData, village: e.target.value})} required />
-              </div>
-
-              {/* Dynamic Grain Bags Input */}
-              <div className="col-12"><hr /><h6>Grain Bags Breakdown</h6></div>
-              {commodities.map((item, idx) => (
-                <div className="col-6 col-md-3" key={idx}>
-                  <label className="form-label small">{item} Bags</label>
-                  <input type="number" className="form-control" placeholder="0" onChange={e=>handleBagChange(item, e.target.value)} />
-                </div>
-              ))}
-
-              <div className="col-6 col-md-3">
-                <label className="form-label small text-danger fw-bold">Remaining Bags</label>
-                <input type="number" className="form-control" placeholder="0" onChange={e=>setTripData({...tripData, remainingBags: e.target.value})} />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label small text-success fw-bold">Freight Earned (₹)</label>
-                <input type="number" className="form-control" placeholder="₹ Freight" onChange={e=>setTripData({...tripData, freightEarned: e.target.value})} required />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label small text-warning fw-bold">Expense Amount (₹)</label>
-                <input type="number" className="form-control" placeholder="₹ Expense" onChange={e=>setTripData({...tripData, expenseAmount: e.target.value})} />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label small">Expense Reason</label>
-                <input type="text" className="form-control" placeholder="Reason (Diesel/Toll)" onChange={e=>setTripData({...tripData, expenseReason: e.target.value})} />
-              </div>
-
-              <div className="col-12 mt-3">
-                <button type="submit" className="btn btn-primary w-100 fw-bold py-2">SAVE TRIP ENTRY</button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        {/* Financial Overview */}
+      <div className="container-fluid py-4" style={{ maxWidth: '1300px' }}>
+        
+        {/* Metric Cards Top Row */}
         <div className="row g-3 mb-4">
-          <div className="col-md-4">
-            <div className="stat-card" style={{ borderColor: '#198754' }}>
-              <span className="text-muted small fw-bold">TOTAL FREIGHT</span>
-              <h3 className="text-success m-0 fw-bold">₹{totalFreight}</h3>
+          <div className="col-12 col-md-4">
+            <div className="stat-box border-start border-4 border-success">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <span className="text-uppercase text-muted fw-bold small">Total Freight</span>
+                  <h3 className="fw-bold text-success m-0 mt-1">₹{totalFreight.toLocaleString()}</h3>
+                </div>
+                <div className="bg-success-subtle p-3 rounded-circle text-success"><i className="fa-solid fa-indian-rupee-sign fa-lg"></i></div>
+              </div>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="stat-card" style={{ borderColor: '#fd7e14' }}>
-              <span className="text-muted small fw-bold">TOTAL EXPENSES</span>
-              <h3 className="text-warning m-0 fw-bold">₹{totalExpenses}</h3>
+          <div className="col-12 col-md-4">
+            <div className="stat-box border-start border-4 border-warning">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <span className="text-uppercase text-muted fw-bold small">Total Expenses</span>
+                  <h3 className="fw-bold text-warning m-0 mt-1">₹{totalExpenses.toLocaleString()}</h3>
+                </div>
+                <div className="bg-warning-subtle p-3 rounded-circle text-warning"><i className="fa-solid fa-receipt fa-lg"></i></div>
+              </div>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="stat-card" style={{ borderColor: '#0d6efd' }}>
-              <span className="text-muted small fw-bold">NET PROFIT</span>
-              <h3 className="text-primary m-0 fw-bold">₹{netProfit}</h3>
+          <div className="col-12 col-md-4">
+            <div className="stat-box border-start border-4 border-primary">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <span className="text-uppercase text-muted fw-bold small">Net Profit</span>
+                  <h3 className="fw-bold text-primary m-0 mt-1">₹{netProfit.toLocaleString()}</h3>
+                </div>
+                <div className="bg-primary-subtle p-3 rounded-circle text-primary"><i className="fa-solid fa-chart-line fa-lg"></i></div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Main Grid: Form + Master */}
+        <div className="row g-4 mb-4">
+          
+          {/* Left Column: Form Entry */}
+          <div className="col-12 col-lg-8">
+            <div className="glass-card">
+              <div className="card-title-custom">
+                <i className="fa-solid fa-pen-to-square text-primary"></i> New Trip Entry
+              </div>
+              <form onSubmit={handleAddTrip}>
+                <div className="row g-3">
+                  <div className="col-12 col-md-6">
+                    <label className="form-label small fw-semibold">Date</label>
+                    <input type="date" className="form-control" value={tripData.date} onChange={e=>setTripData({...tripData, date: e.target.value})} required />
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <label className="form-label small fw-semibold">Village Name</label>
+                    <input type="text" className="form-control" placeholder="Village Name" onChange={e=>setTripData({...tripData, village: e.target.value})} required />
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <label className="form-label small fw-semibold">Driver Name (Autocomplete)</label>
+                    <input type="text" list="driverList" className="form-control" placeholder="Type or Select Driver" onChange={e=>setTripData({...tripData, driver: e.target.value})} required />
+                    <datalist id="driverList">
+                      {drivers.map((d, i)=><option key={i} value={d} />)}
+                    </datalist>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <label className="form-label small fw-semibold">Vehicle Number</label>
+                    <input type="text" list="vehicleList" className="form-control" placeholder="e.g. MH 06AQ 6368" onChange={e=>setTripData({...tripData, vehicle: e.target.value})} required />
+                    <datalist id="vehicleList">
+                      {vehicles.map((v, i)=><option key={i} value={v} />)}
+                    </datalist>
+                  </div>
+
+                  {/* Bags Breakdown */}
+                  <div className="col-12 mt-4">
+                    <label className="form-label small fw-bold text-secondary text-uppercase mb-2">Grain Bags Breakdown</label>
+                    <div className="row g-2">
+                      {commodities.map((item, idx) => (
+                        <div className="col-6 col-md-3" key={idx}>
+                          <div className="bg-light p-2 rounded-3 border">
+                            <span className="small text-muted d-block fw-semibold mb-1">{item} Bags</span>
+                            <input type="number" className="form-control form-control-sm" placeholder="0" onChange={e=>handleBagChange(item, e.target.value)} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Financials & Remaining */}
+                  <div className="col-12 col-md-4 mt-3">
+                    <label className="form-label small fw-semibold text-danger">Remaining Bags</label>
+                    <input type="number" className="form-control" placeholder="0" onChange={e=>setTripData({...tripData, remainingBags: e.target.value})} />
+                  </div>
+                  <div className="col-12 col-md-4 mt-3">
+                    <label className="form-label small fw-semibold text-success">Freight Earned (₹)</label>
+                    <input type="number" className="form-control" placeholder="₹ Freight" onChange={e=>setTripData({...tripData, freightEarned: e.target.value})} required />
+                  </div>
+                  <div className="col-12 col-md-4 mt-3">
+                    <label className="form-label small fw-semibold text-warning">Expense Amount (₹)</label>
+                    <input type="number" className="form-control" placeholder="₹ Expense" onChange={e=>setTripData({...tripData, expenseAmount: e.target.value})} />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label small fw-semibold">Expense Reason</label>
+                    <input type="text" className="form-control" placeholder="Reason (Diesel / Toll / Maintenance)" onChange={e=>setTripData({...tripData, expenseReason: e.target.value})} />
+                  </div>
+
+                  <div className="col-12 mt-4">
+                    <button type="submit" className="btn btn-custom-primary w-100 py-2 shadow-sm">
+                      <i className="fa-solid fa-floppy-disk me-2"></i> SAVE TRIP ENTRY
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Right Column: Commodity Add & Audit Log */}
+          <div className="col-12 col-lg-4">
+            
+            {/* Master Add */}
+            <div className="glass-card mb-4">
+              <div className="card-title-custom">
+                <i className="fa-solid fa-wheat-awn text-warning"></i> Add New Grain / Commodity
+              </div>
+              <div className="input-group">
+                <input type="text" className="form-control" placeholder="e.g. Gram, Pulses" value={newCommodity} onChange={e=>setNewCommodity(e.target.value)} />
+                <button className="btn btn-success fw-bold px-3" type="button" onClick={handleAddCommodity}>+ Add</button>
+              </div>
+            </div>
+
+            {/* Audit Log */}
+            <div className="glass-card">
+              <div className="card-title-custom">
+                <i className="fa-solid fa-clock-rotate-left text-secondary"></i> Audit Log System
+              </div>
+              <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+                {auditLogs.map((log)=>(
+                  <div key={log.id} className="p-2 mb-2 bg-light rounded-3 border-start border-3 border-primary small">
+                    <div className="d-flex justify-content-between align-items-center mb-1">
+                      <span className="badge bg-dark text-white">{log.user}</span>
+                      <span className="text-muted" style={{ fontSize: '0.75rem' }}>{log.time}</span>
+                    </div>
+                    <div className="text-secondary">{log.action}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         </div>
 
         {/* Ledger Table */}
-        <div className="card-custom">
-          <h5 className="fw-bold text-dark mb-3">📋 Monthly Vehicle Ledger</h5>
+        <div className="glass-card">
+          <div className="card-title-custom">
+            <i className="fa-solid fa-table-list text-primary"></i> Monthly Vehicle Ledger
+          </div>
           <div className="table-responsive">
-            <table className="table table-bordered table-hover align-middle text-center m-0">
-              <thead className="table-light">
+            <table className="table table-custom table-hover border align-middle text-center m-0">
+              <thead>
                 <tr>
                   <th>S.No</th><th>Date</th><th>Driver</th><th>Vehicle</th><th>Village</th>
                   {commodities.map((c, i)=><th key={i}>{c}</th>)}
@@ -249,35 +325,14 @@ function App() {
                   <tr key={item.id}>
                     <td>{idx+1}</td>
                     <td>{item.date}</td>
-                    <td>{item.driver || '-'}</td>
-                    <td>{item.vehicle || '-'}</td>
+                    <td className="fw-semibold">{item.driver || '-'}</td>
+                    <td><span className="badge bg-light text-dark border">{item.vehicle || '-'}</span></td>
                     <td>{item.village}</td>
                     {commodities.map((c, i)=><td key={i}>{item.bags[c] || 0}</td>)}
                     <td className="fw-bold">{item.totalBags}</td>
                     <td className="text-danger fw-bold">{item.remainingBags}</td>
                     <td className="text-success fw-bold">₹{item.freightEarned}</td>
                     <td className="text-warning fw-bold">₹{item.expenseAmount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Audit Log System */}
-        <div className="card-custom">
-          <h5 className="fw-bold text-dark mb-3">🛡️ Audit Log System (History)</h5>
-          <div className="table-responsive">
-            <table className="table table-sm table-striped">
-              <thead className="table-dark">
-                <tr><th>Time</th><th>User Role</th><th>Action Performed</th></tr>
-              </thead>
-              <tbody>
-                {auditLogs.map((log)=>(
-                  <tr key={log.id}>
-                    <td><small>{log.time}</small></td>
-                    <td><span className="badge bg-secondary">{log.user}</span></td>
-                    <td><small>{log.action}</small></td>
                   </tr>
                 ))}
               </tbody>
@@ -294,4 +349,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 
 </body>
-</html>
+  </html>
+  
