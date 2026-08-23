@@ -3,27 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FC CONTRACTOR & TRANSPORT</title>
+  <title>FC CONTRACTOR & TRANSPORT - Parbhani / Palam</title>
+  
+  <!-- React & Libraries -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- Styling -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
   <style>
-    :root { --primary-color: #1e3a8a; --accent-color: #2563eb; --bg-color: #f8fafc; }
-    body { background-color: var(--bg-color); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e293b; }
-    .top-navbar { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 14px 20px; border-bottom: 3px solid #3b82f6; }
-    .glass-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); padding: 20px; margin-bottom: 20px; }
-    .card-title-custom { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+    :root { --primary: #0f172a; --brand: #1e3a8a; --accent: #2563eb; --bg: #f8fafc; }
+    body { background-color: var(--bg); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; }
+    .navbar-custom { background: linear-gradient(135deg, var(--primary) 0%, var(--brand) 100%); color: white; padding: 14px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card-glass { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); padding: 22px; margin-bottom: 24px; }
+    .section-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 20px; }
     .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 14px; font-size: 0.95rem; }
-    .form-control:focus, .form-select:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
-    .stat-box { border-radius: 14px; padding: 16px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: transform 0.2s; }
-    .stat-box:hover { transform: translateY(-2px); }
-    .badge-role { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(4px); color: #e2e8f0; font-weight: 500; font-size: 0.8rem; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-    .table-custom { font-size: 0.9rem; }
+    .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .stat-card { border-radius: 14px; padding: 18px; background: #ffffff; border: 1px solid #e2e8f0; }
+    .nav-pills .nav-link { border-radius: 10px; color: #64748b; font-weight: 600; padding: 10px 18px; }
+    .nav-pills .nav-link.active { background-color: var(--brand); color: white; }
+    .table-custom { font-size: 0.85rem; }
     .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
-    .btn-custom-primary { background-color: #2563eb; color: white; font-weight: 600; border-radius: 10px; padding: 10px 20px; border: none; }
-    .btn-custom-primary:hover { background-color: #1d4ed8; }
+    .badge-role { background: rgba(255, 255, 255, 0.18); color: #ffffff; font-weight: 500; font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; }
   </style>
 </head>
 <body>
@@ -31,111 +38,278 @@
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState } = React;
+const { useState, useEffect } = React;
+
+// 115 Pre-configured Villages of Palam Taluka
+const INITIAL_VILLAGES = [
+  "1. Sayangi Bhu.", "2. Raorajur manchak", "3. Raorajur khandare", "4. Raorajur Sudhakar", "5. Dhanewadi", "6. Khulwadi", "7. Umrathadi", "8. Arkhed", "9. Someshwar", "10. Phala", "11. Pharkanda", "12. Digras chairman", "13. Digras kure", "14. Barbadi", "15. Sayangi Thadi", "16. Pimpalgaon Mu.", "17. Bhogav", "18. Rahati", "19. Dutka", "20. Gunj", "21. Parva", "22. Kharabdhanora", "23. Shekhrajur Deshmukh", "24. Shekhrajur chairman", "25. Wadi Bu. Trimbak", "26. Wadi Khu. Nivritti", "27. Gulkhand", "28. Jawala Pa.", "29. Ghoda", "30. Sirpur", "31. Sayala", "32. Rokdewadi", "33. Kapsi", "34. Aajmabad", "35. Ganeshwadi", "36. Puyani", "37. Palam bhutla", "38. Palam badam bai", "39. Palam bhode", "40. Palam Gaikwade", "41. Palam Amol", "42. Palam sakaram", "43. Palam Gautam", "44. Anjanwadi", "45. Pethshivni Savita", "46. Pethshivni Prashant", "47. Sategaon", "48. Selu suryabhan", "49. Selu Keshav", "50. Kolwadi", "51. Paidu Bu. Patale", "52. Paidu Khu. Khiraji", "53. Paidu Mu. Vitthal", "54. Paidu Bu. Pandit", "55. Sarfarazpur", "56. Pethpimpalgaon gulab", "57. Pethpimpalgaon Uttam", "58. Teljapur", "59. Aadgaon", "60. Kandalgaon", "61. Navlagaon", "62. Vanbhujwadi", "63. Anandwadi", "64. Chatori M B G", "65. Chatori Shivaji", "66. Nava", "67. Bandharwadi", "68. Khadi M B G", "69. Khadi dadewad", "70. Khoras Vilas", "71. Khoras sakaram", "72. Tambulgaon", "73. Sadlapur", "74. Sipegaon", "75. Mutkhed", "76. Umra", "77. Bhalkukadi", "78. Konerwadi", "79. Borgaon Bu. Rao Saheb", "80. Borgaon Bu. Hanumant", "81. Jogalgaon", "82. Ukkadgaon", "83. Varkhed", "84. Mojmabad Tanda", "85. Chorvad Deshmukh", "86. Pokharni Devi", "87. Borgaon Khu. Vilas", "88. Borgaon Khu. Subhash", "89. Martandwadi", "90. Mojmabad kadar", "91. Mojmabad bajgir", "92. Banvas Kiran Bedi", "93. Banvas Kai Balasaheb", "94. Girdharwadi", "95. Phatunaik Tanda", "96. Ramapur Tanda", "97. Ramapur", "98. Dongargaon", "99. Tandulwadi Rukmin", "100. Mahadevwadi", "101. Landkawadi", "102. Sadgirwadi", "103. Reva Tanda", "104. Vanwadi", "105. Phuttalav Tanda", "106. Sirsam", "107. Chatori Pathan", "108. Banvas Mathrubhumi", "109. Chorvad Sant", "110. Tandulwadi Swaraj", "111. Palam M B G", "112. Palam Swami", "113. Palam Pratibha", "114. Pethshivni Prabhu", "115. Navalgao"
+];
+
+// Pre-configured Primary Hired Vehicles & Drivers
+const INITIAL_VEHICLES = [
+  { id: 1, number: "MH 22N 1993", driver: "BADI", phone: "9637227967" },
+  { id: 2, number: "MH 48AG 0768", driver: "PANKAJ", phone: "9637227967" },
+  { id: 3, number: "MH 16AY 7737", driver: "KISHAN", phone: "7620446047" },
+  { id: 4, number: "MH 06AQ 6368", driver: "ASHOK", phone: "9011108603" },
+  { id: 5, number: "MH 04FP 0739", driver: "KALE", phone: "9011108603" }
+];
 
 function App() {
+  // Auth State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState('Admin'); // Admin / Operator
+  const [activeTaluka, setActiveTaluka] = useState('Palam');
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
 
-  const [drivers] = useState(['Ashok', 'Ramesh Kumar', 'Suresh Patil']);
-  const [vehicles] = useState(['MH 06AQ 6368', 'MH-22-AA-1234', 'MH-22-B-5678']);
-  const [commodities, setCommodities] = useState(['Wheat', 'Rice', 'Sugar', 'Jawar']);
-  const [newCommodity, setNewCommodity] = useState('');
+  // Navigation Tabs
+  const [activeTab, setActiveTab] = useState('trips'); // trips, expenses, ledger, masters, contractors
 
-  const [tripData, setTripData] = useState({
-    date: '2026-08-23', driver: '', vehicle: '', village: '',
-    grainQuantities: { Wheat: 0, Rice: 0, Sugar: 0, Jawar: 0 },
-    remainingBags: 0, freightEarned: '', expenseAmount: '', expenseReason: ''
+  // Masters State
+  const [villages, setVillages] = useState(INITIAL_VILLAGES);
+  const [vehicles, setVehicles] = useState(INITIAL_VEHICLES);
+  const [dynamicCommodities, setDynamicCommodities] = useState([]);
+  const [newCommodityName, setNewCommodityName] = useState('');
+
+  // Contractors State
+  const [contractors, setContractors] = useState([
+    { id: 1, name: "Palam Central Godown", phone: "9822001122", taluka: "Palam", photo: "" }
+  ]);
+
+  // Trip Entry State
+  const [trips, setTrips] = useState([
+    {
+      id: 101,
+      date: '2026-08-23',
+      taluka: 'Palam',
+      village: '21. Parva',
+      vehicle: 'MH 06AQ 6368',
+      driver: 'ASHOK',
+      phone: '9011108603',
+      wheatBags: 120,
+      riceBags: 100,
+      sugarBags: 50,
+      otherBags: 0,
+      ratePerBag: 11,
+      remainingBags: 5,
+      totalFreight: 2970
+    }
+  ]);
+
+  const [tripForm, setTripForm] = useState({
+    id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '',
+    wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0
   });
 
-  const [ledger, setLedger] = useState([
-    { id: 1, date: '2026-08-23', driver: 'Ashok', vehicle: 'MH 06AQ 6368', village: 'Parva', bags: { Wheat: 100, Rice: 120, Sugar: 1, Jawar: 0 }, totalBags: 221, remainingBags: 5, freightEarned: 5000, expenseAmount: 5000, expenseReason: 'Diesel' },
-    { id: 2, date: '2026-08-20', driver: 'Ramesh Kumar', vehicle: 'MH-22-AA-1234', village: 'Palam Market', bags: { Wheat: 150, Rice: 100, Sugar: 50, Jawar: 0 }, totalBags: 300, remainingBags: 10, freightEarned: 15000, expenseAmount: 2000, expenseReason: 'Diesel & Toll' }
+  // Expense Entry State
+  const [expenses, setExpenses] = useState([
+    { id: 201, date: '2026-08-23', taluka: 'Palam', vehicle: 'MH 06AQ 6368', amount: 800, category: 'Diesel' }
   ]);
 
-  const [auditLogs, setAuditLogs] = useState([
-    { id: 1, time: '2026-08-23 12:31:25', user: 'District Admin', action: 'Added new trip for Parva (Vehicle: MH 06AQ 6368, Total Bags: 221)' },
-    { id: 2, time: '2026-08-20 10:00:00', user: 'Palam Operator', action: 'Created initial entry for Palam Market' }
-  ]);
+  const [expenseForm, setExpenseForm] = useState({
+    id: null, date: '2026-08-23', vehicle: '', amount: '', category: 'Diesel'
+  });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (username === 'admin' && password === 'Admin@123') {
-      setUserRole('District Admin');
-      setIsLoggedIn(true);
-    } else if (username === 'operator' && password === 'Operator@123') {
-      setUserRole('Palam Operator');
-      setIsLoggedIn(true);
-    } else {
-      alert('Galat Username ya Password!');
-    }
-  };
+  // Ledger Filters
+  const [ledgerVehicleFilter, setLedgerVehicleFilter] = useState('');
+  const [ledgerMonthFilter, setLedgerMonthFilter] = useState('2026-08');
 
-  const handleAddCommodity = () => {
-    if (newCommodity.trim() && !commodities.includes(newCommodity)) {
-      setCommodities([...commodities, newCommodity.trim()]);
-      setNewCommodity('');
-    }
-  };
-
-  const handleBagChange = (item, val) => {
-    setTripData({
-      ...tripData,
-      grainQuantities: { ...tripData.grainQuantities, [item]: Number(val) || 0 }
+  // Auto-fill Driver & Phone on Vehicle Select
+  const handleVehicleSelectForTrip = (vehNum) => {
+    const found = vehicles.find(v => v.number === vehNum);
+    setTripForm({
+      ...tripForm,
+      vehicle: vehNum,
+      driver: found ? found.driver : '',
+      phone: found ? found.phone : ''
     });
   };
 
-  const handleAddTrip = (e) => {
+  // Safe Cleanup effect to prevent 'destroy is not a function' runtime error
+  useEffect(() => {
+    let isMounted = true;
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Auth Handler
+  const handleLogin = (e) => {
     e.preventDefault();
-    const totalBags = Object.values(tripData.grainQuantities).reduce((a, b) => a + b, 0);
-    const newEntry = {
-      id: Date.now(),
-      ...tripData,
-      bags: { ...tripData.grainQuantities },
-      totalBags,
-      freightEarned: Number(tripData.freightEarned || 0),
-      expenseAmount: Number(tripData.expenseAmount || 0),
-      remainingBags: Number(tripData.remainingBags || 0)
-    };
-
-    setLedger([newEntry, ...ledger]);
-
-    const log = {
-      id: Date.now(),
-      time: new Date().toLocaleString(),
-      user: userRole,
-      action: `Added trip for ${tripData.village || 'N/A'} (Vehicle: ${tripData.vehicle || 'N/A'}, Bags: ${totalBags})`
-    };
-    setAuditLogs([log, ...auditLogs]);
-
-    alert('Entry Save Ho Gayi!');
+    if (loginForm.username === 'admin' && loginForm.password === 'Admin@123') {
+      setUserRole('Admin');
+      setIsLoggedIn(true);
+    } else if (loginForm.username === 'operator' && loginForm.password === 'Operator@123') {
+      setUserRole('Operator');
+      setActiveTaluka('Palam');
+      setIsLoggedIn(true);
+    } else {
+      alert('Invalid Username or Password! Try admin / Admin@123');
+    }
   };
 
-  const totalFreight = ledger.reduce((acc, item) => acc + item.freightEarned, 0);
-  const totalExpenses = ledger.reduce((acc, item) => acc + item.expenseAmount, 0);
-  const netProfit = totalFreight - totalExpenses;
+  // Mock Notification Trigger
+  const triggerNotification = (type, recipient, details) => {
+    console.log(`[SMS/WhatsApp Alert Sent] To: ${recipient} | Type: ${type} | Details: ${details}`);
+  };
+
+  // Trip Form Actions
+  const handleSaveTrip = (e) => {
+    e.preventDefault();
+    const totalBags = (Number(tripForm.wheatBags)||0) + (Number(tripForm.riceBags)||0) + (Number(tripForm.sugarBags)||0) + (Number(tripForm.otherBags)||0);
+    const calculatedFreight = totalBags * (Number(tripForm.ratePerBag) || 11);
+
+    if (tripForm.id) {
+      setTrips(trips.map(t => t.id === tripForm.id ? { ...tripForm, taluka: activeTaluka, totalFreight: calculatedFreight } : t));
+      alert('Trip entry updated successfully!');
+    } else {
+      const newTrip = { ...tripForm, id: Date.now(), taluka: activeTaluka, totalFreight: calculatedFreight };
+      setTrips([newTrip, ...trips]);
+      alert('Trip entry saved!');
+      triggerNotification('TRIP_CREATED', tripForm.phone, `New Trip for ${tripForm.village}: ${totalBags} bags. Freight: ₹${calculatedFreight}`);
+    }
+
+    setTripForm({ id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '', wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0 });
+  };
+
+  const handleDeleteTrip = (id) => {
+    if (confirm("Are you sure you want to delete this trip record?")) {
+      setTrips(trips.filter(t => t.id !== id));
+    }
+  };
+
+  // Expense Form Actions
+  const handleSaveExpense = (e) => {
+    e.preventDefault();
+    if (expenseForm.id) {
+      setExpenses(expenses.map(exp => exp.id === expenseForm.id ? { ...expenseForm, taluka: activeTaluka, amount: Number(expenseForm.amount) } : exp));
+      alert('Expense record updated!');
+    } else {
+      const newExp = { ...expenseForm, id: Date.now(), taluka: activeTaluka, amount: Number(expenseForm.amount) };
+      setExpenses([newExp, ...expenses]);
+      alert('Expense record saved!');
+      triggerNotification('EXPENSE_CREATED', 'Admin', `Expense added for ${expenseForm.vehicle}: ₹${expenseForm.amount} (${expenseForm.category})`);
+    }
+
+    setExpenseForm({ id: null, date: '2026-08-23', vehicle: '', amount: '', category: 'Diesel' });
+  };
+
+  const handleDeleteExpense = (id) => {
+    if (confirm("Delete this expense record?")) {
+      setExpenses(expenses.filter(e => e.id !== id));
+    }
+  };
+
+  // Dynamic Commodity
+  const handleAddCommodity = () => {
+    if (newCommodityName.trim() && !dynamicCommodities.includes(newCommodityName.trim())) {
+      setDynamicCommodities([...dynamicCommodities, newCommodityName.trim()]);
+      setNewCommodityName('');
+      alert('New Commodity Added globally!');
+    }
+  };
+
+  // PDF Export
+  const exportPDF = (ledgerData, selectedVeh) => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`FC CONTRACTOR & TRANSPORT - ${activeTaluka.toUpperCase()}`, 14, 15);
+    doc.setFontSize(11);
+    doc.text(`Vehicle Ledger Report: ${selectedVeh || 'All Vehicles'} (${ledgerMonthFilter})`, 14, 23);
+
+    const rows = ledgerData.map((row, idx) => [
+      idx + 1, row.date, row.village, row.wheatBags, row.riceBags, row.sugarBags, row.otherBags,
+      (row.wheatBags + row.riceBags + row.sugarBags + row.otherBags), row.remainingBags, `Rs. ${row.totalFreight}`, `Rs. ${row.expenseAmount}`, row.expenseReason
+    ]);
+
+    doc.autoTable({
+      head: [['S.No', 'Date', 'Village', 'Wheat', 'Rice', 'Sugar', 'Other', 'Total Bags', 'Remaining', 'Freight', 'Expense', 'Expense Reason']],
+      body: rows,
+      startY: 30,
+      theme: 'grid',
+      headStyles: { fillColor: [30, 58, 138] }
+    });
+
+    doc.save(`Ledger_${selectedVeh || 'All'}_${ledgerMonthFilter}.pdf`);
+  };
+
+  // Excel Export
+  const exportExcel = (ledgerData) => {
+    const ws = XLSX.utils.json_to_sheet(ledgerData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Monthly Ledger");
+    XLSX.writeFile(wb, `Transport_Ledger_${ledgerMonthFilter}.xlsx`);
+  };
+
+  // Filter Scope Check
+  const filteredTripsScope = userRole === 'Operator' ? trips.filter(t => t.taluka === activeTaluka) : trips;
+  const filteredExpensesScope = userRole === 'Operator' ? expenses.filter(e => e.taluka === activeTaluka) : expenses;
+
+  // Ledger Compiled Data Calculation
+  const getCompiledLedger = () => {
+    let combined = [];
+
+    filteredTripsScope.forEach(trip => {
+      if (ledgerVehicleFilter && trip.vehicle !== ledgerVehicleFilter) return;
+      if (trip.date.substring(0, 7) !== ledgerMonthFilter) return;
+
+      combined.push({
+        id: `trip-${trip.id}`,
+        date: trip.date,
+        village: trip.village,
+        vehicle: trip.vehicle,
+        wheatBags: trip.wheatBags || 0,
+        riceBags: trip.riceBags || 0,
+        sugarBags: trip.sugarBags || 0,
+        otherBags: trip.otherBags || 0,
+        remainingBags: trip.remainingBags || 0,
+        totalFreight: trip.totalFreight || 0,
+        expenseAmount: 0,
+        expenseReason: '-'
+      });
+    });
+
+    filteredExpensesScope.forEach(exp => {
+      if (ledgerVehicleFilter && exp.vehicle !== ledgerVehicleFilter) return;
+      if (exp.date.substring(0, 7) !== ledgerMonthFilter) return;
+
+      combined.push({
+        id: `exp-${exp.id}`,
+        date: exp.date,
+        village: '[EXPENSE ONLY]',
+        vehicle: exp.vehicle,
+        wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, remainingBags: 0,
+        totalFreight: 0,
+        expenseAmount: exp.amount,
+        expenseReason: exp.category
+      });
+    });
+
+    return combined.sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
+  const compiledLedgerData = getCompiledLedger();
+  const ledgerTotalFreight = compiledLedgerData.reduce((a, b) => a + b.totalFreight, 0);
+  const ledgerTotalExpense = compiledLedgerData.reduce((a, b) => a + b.expenseAmount, 0);
+  const ledgerNetProfit = ledgerTotalFreight - ledgerTotalExpense;
 
   if (!isLoggedIn) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)' }}>
-        <div className="glass-card text-center p-4" style={{ width: '360px', borderRadius: '20px' }}>
-          <div className="mb-3">
-            <i className="fa-solid fa-truck-front text-primary fa-3x"></i>
-          </div>
-          <h4 className="fw-bold text-dark mb-1">FC CONTRACTOR</h4>
-          <p className="text-muted small mb-4">Transport & Grain Ledger Management</p>
+        <div className="card-glass text-center" style={{ width: '380px', borderRadius: '24px' }}>
+          <i className="fa-solid fa-truck-ramp-box text-primary fa-3x mb-3"></i>
+          <h4 className="fw-bold text-dark m-0">FC CONTRACTOR & TRANSPORT</h4>
+          <p className="text-muted small mt-1 mb-4">Parbhani District Grain Management</p>
           <form onSubmit={handleLogin}>
-            <div className="mb-3 text-start">
-              <label className="form-label small fw-semibold text-secondary">Username</label>
-              <input type="text" className="form-control" placeholder="Enter username" value={username} onChange={e=>setUsername(e.target.value)} required />
+            <div className="text-start mb-3">
+              <label className="form-label small fw-semibold">Username</label>
+              <input type="text" className="form-control" placeholder="admin / operator" value={loginForm.username} onChange={e=>setLoginForm({...loginForm, username: e.target.value})} required />
             </div>
-            <div className="mb-4 text-start">
-              <label className="form-label small fw-semibold text-secondary">Password</label>
-              <input type="password" className="form-control" placeholder="Enter password" value={password} onChange={e=>setPassword(e.target.value)} required />
+            <div className="text-start mb-4">
+              <label className="form-label small fw-semibold">Password</label>
+              <input type="password" className="form-control" placeholder="••••••••" value={loginForm.password} onChange={e=>setLoginForm({...loginForm, password: e.target.value})} required />
             </div>
-            <button type="submit" className="btn btn-custom-primary w-100 py-2">LOGIN TO DASHBOARD</button>
+            <button type="submit" className="btn btn-primary w-100 py-2 fw-bold rounded-3">LOGIN TO SYSTEM</button>
           </form>
         </div>
       </div>
@@ -145,208 +319,69 @@ function App() {
   return (
     <div>
       {/* Top Navbar */}
-      <div className="top-navbar d-flex justify-content-between align-items-center">
+      <div className="navbar-custom d-flex justify-content-between align-items-center">
         <div>
           <h5 className="m-0 fw-bold"><i className="fa-solid fa-truck-moving me-2"></i>FC CONTRACTOR & TRANSPORT</h5>
-          <span className="badge-role mt-1 d-inline-block"><i className="fa-solid fa-user-shield me-1"></i>Role: {userRole}</span>
+          <span className="badge-role mt-1 d-inline-block">
+            <i className="fa-solid fa-user-shield me-1"></i> Role: {userRole} | Taluka Scope: {userRole === 'Admin' ? 'All Talukas' : activeTaluka}
+          </span>
         </div>
-        <button className="btn btn-outline-light btn-sm rounded-pill px-3" onClick={()=>setIsLoggedIn(false)}>
-          <i className="fa-solid fa-right-from-bracket me-1"></i> Logout
-        </button>
+        <div className="d-flex align-items-center gap-3">
+          {userRole === 'Admin' && (
+            <select className="form-select form-select-sm" value={activeTaluka} onChange={e=>setActiveTaluka(e.target.value)} style={{ width: '150px' }}>
+              <option value="Palam">Palam Taluka</option>
+              <option value="Parbhani">Parbhani City</option>
+              <option value="Gangakhed">Gangakhed</option>
+              <option value="Pathri">Pathri</option>
+            </select>
+          )}
+          <button className="btn btn-outline-light btn-sm rounded-pill px-3" onClick={()=>setIsLoggedIn(false)}>
+            <i className="fa-solid fa-right-from-bracket me-1"></i> Logout
+          </button>
+        </div>
       </div>
 
-      <div className="container-fluid py-4" style={{ maxWidth: '1300px' }}>
+      <div className="container-fluid py-4" style={{ maxWidth: '1400px' }}>
         
-        {/* Metric Cards Top Row */}
-        <div className="row g-3 mb-4">
-          <div className="col-12 col-md-4">
-            <div className="stat-box border-start border-4 border-success">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <span className="text-uppercase text-muted fw-bold small">Total Freight</span>
-                  <h3 className="fw-bold text-success m-0 mt-1">₹{totalFreight.toLocaleString()}</h3>
+        {/* Navigation Tabs */}
+        <ul className="nav nav-pills mb-4">
+          <li className="nav-item">
+            <button className={`nav-link ${activeTab === 'trips' ? 'active' : ''}`} onClick={()=>setActiveTab('trips')}>
+              <i className="fa-solid fa-truck-loading me-2"></i>Trip Loading Entry
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className={`nav-link ${activeTab === 'expenses' ? 'active' : ''}`} onClick={()=>setActiveTab('expenses')}>
+              <i className="fa-solid fa-receipt me-2"></i>Payment & Expenses
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className={`nav-link ${activeTab === 'ledger' ? 'active' : ''}`} onClick={()=>setActiveTab('ledger')}>
+              <i className="fa-solid fa-file-invoice-dollar me-2"></i>Monthly Ledgers & Reports
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className={`nav-link ${activeTab === 'masters' ? 'active' : ''}`} onClick={()=>setActiveTab('masters')}>
+              <i className="fa-solid fa-sliders me-2"></i>Master Setup
+            </button>
+          </li>
+        </ul>
+
+        {/* 1. TRIP LOADING ENTRY PAGE */}
+        {activeTab === 'trips' && (
+          <div className="row g-4">
+            <div className="col-12 col-lg-5">
+              <div className="card-glass">
+                <div className="section-title">
+                  <span><i className="fa-solid fa-pen-to-square text-primary me-2"></i>{tripForm.id ? 'Edit Trip Entry' : 'New Trip Loading Entry'}</span>
+                  {tripForm.id && <button className="btn btn-sm btn-outline-secondary" onClick={()=>setTripForm({ id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '', wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0 })}>Cancel Edit</button>}
                 </div>
-                <div className="bg-success-subtle p-3 rounded-circle text-success"><i className="fa-solid fa-indian-rupee-sign fa-lg"></i></div>
-              </div>
-            </div>
-          </div>
-          <div className="col-12 col-md-4">
-            <div className="stat-box border-start border-4 border-warning">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <span className="text-uppercase text-muted fw-bold small">Total Expenses</span>
-                  <h3 className="fw-bold text-warning m-0 mt-1">₹{totalExpenses.toLocaleString()}</h3>
-                </div>
-                <div className="bg-warning-subtle p-3 rounded-circle text-warning"><i className="fa-solid fa-receipt fa-lg"></i></div>
-              </div>
-            </div>
-          </div>
-          <div className="col-12 col-md-4">
-            <div className="stat-box border-start border-4 border-primary">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <span className="text-uppercase text-muted fw-bold small">Net Profit</span>
-                  <h3 className="fw-bold text-primary m-0 mt-1">₹{netProfit.toLocaleString()}</h3>
-                </div>
-                <div className="bg-primary-subtle p-3 rounded-circle text-primary"><i className="fa-solid fa-chart-line fa-lg"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Grid: Form + Master */}
-        <div className="row g-4 mb-4">
-          
-          {/* Left Column: Form Entry */}
-          <div className="col-12 col-lg-8">
-            <div className="glass-card">
-              <div className="card-title-custom">
-                <i className="fa-solid fa-pen-to-square text-primary"></i> New Trip Entry
-              </div>
-              <form onSubmit={handleAddTrip}>
-                <div className="row g-3">
-                  <div className="col-12 col-md-6">
-                    <label className="form-label small fw-semibold">Date</label>
-                    <input type="date" className="form-control" value={tripData.date} onChange={e=>setTripData({...tripData, date: e.target.value})} required />
+                <form onSubmit={handleSaveTrip}>
+                  <div className="mb-3">
+                    <label className="form-label small fw-semibold">Trip Date</label>
+                    <input type="date" className="form-control" value={tripForm.date} onChange={e=>setTripForm({...tripForm, date: e.target.value})} required />
                   </div>
-                  <div className="col-12 col-md-6">
-                    <label className="form-label small fw-semibold">Village Name</label>
-                    <input type="text" className="form-control" placeholder="Village Name" onChange={e=>setTripData({...tripData, village: e.target.value})} required />
-                  </div>
-                  <div className="col-12 col-md-6">
-                    <label className="form-label small fw-semibold">Driver Name (Autocomplete)</label>
-                    <input type="text" list="driverList" className="form-control" placeholder="Type or Select Driver" onChange={e=>setTripData({...tripData, driver: e.target.value})} required />
-                    <datalist id="driverList">
-                      {drivers.map((d, i)=><option key={i} value={d} />)}
-                    </datalist>
-                  </div>
-                  <div className="col-12 col-md-6">
-                    <label className="form-label small fw-semibold">Vehicle Number</label>
-                    <input type="text" list="vehicleList" className="form-control" placeholder="e.g. MH 06AQ 6368" onChange={e=>setTripData({...tripData, vehicle: e.target.value})} required />
-                    <datalist id="vehicleList">
-                      {vehicles.map((v, i)=><option key={i} value={v} />)}
-                    </datalist>
-                  </div>
-
-                  {/* Bags Breakdown */}
-                  <div className="col-12 mt-4">
-                    <label className="form-label small fw-bold text-secondary text-uppercase mb-2">Grain Bags Breakdown</label>
-                    <div className="row g-2">
-                      {commodities.map((item, idx) => (
-                        <div className="col-6 col-md-3" key={idx}>
-                          <div className="bg-light p-2 rounded-3 border">
-                            <span className="small text-muted d-block fw-semibold mb-1">{item} Bags</span>
-                            <input type="number" className="form-control form-control-sm" placeholder="0" onChange={e=>handleBagChange(item, e.target.value)} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Financials & Remaining */}
-                  <div className="col-12 col-md-4 mt-3">
-                    <label className="form-label small fw-semibold text-danger">Remaining Bags</label>
-                    <input type="number" className="form-control" placeholder="0" onChange={e=>setTripData({...tripData, remainingBags: e.target.value})} />
-                  </div>
-                  <div className="col-12 col-md-4 mt-3">
-                    <label className="form-label small fw-semibold text-success">Freight Earned (₹)</label>
-                    <input type="number" className="form-control" placeholder="₹ Freight" onChange={e=>setTripData({...tripData, freightEarned: e.target.value})} required />
-                  </div>
-                  <div className="col-12 col-md-4 mt-3">
-                    <label className="form-label small fw-semibold text-warning">Expense Amount (₹)</label>
-                    <input type="number" className="form-control" placeholder="₹ Expense" onChange={e=>setTripData({...tripData, expenseAmount: e.target.value})} />
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label small fw-semibold">Expense Reason</label>
-                    <input type="text" className="form-control" placeholder="Reason (Diesel / Toll / Maintenance)" onChange={e=>setTripData({...tripData, expenseReason: e.target.value})} />
-                  </div>
-
-                  <div className="col-12 mt-4">
-                    <button type="submit" className="btn btn-custom-primary w-100 py-2 shadow-sm">
-                      <i className="fa-solid fa-floppy-disk me-2"></i> SAVE TRIP ENTRY
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          {/* Right Column: Commodity Add & Audit Log */}
-          <div className="col-12 col-lg-4">
-            
-            {/* Master Add */}
-            <div className="glass-card mb-4">
-              <div className="card-title-custom">
-                <i className="fa-solid fa-wheat-awn text-warning"></i> Add New Grain / Commodity
-              </div>
-              <div className="input-group">
-                <input type="text" className="form-control" placeholder="e.g. Gram, Pulses" value={newCommodity} onChange={e=>setNewCommodity(e.target.value)} />
-                <button className="btn btn-success fw-bold px-3" type="button" onClick={handleAddCommodity}>+ Add</button>
-              </div>
-            </div>
-
-            {/* Audit Log */}
-            <div className="glass-card">
-              <div className="card-title-custom">
-                <i className="fa-solid fa-clock-rotate-left text-secondary"></i> Audit Log System
-              </div>
-              <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
-                {auditLogs.map((log)=>(
-                  <div key={log.id} className="p-2 mb-2 bg-light rounded-3 border-start border-3 border-primary small">
-                    <div className="d-flex justify-content-between align-items-center mb-1">
-                      <span className="badge bg-dark text-white">{log.user}</span>
-                      <span className="text-muted" style={{ fontSize: '0.75rem' }}>{log.time}</span>
-                    </div>
-                    <div className="text-secondary">{log.action}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Ledger Table */}
-        <div className="glass-card">
-          <div className="card-title-custom">
-            <i className="fa-solid fa-table-list text-primary"></i> Monthly Vehicle Ledger
-          </div>
-          <div className="table-responsive">
-            <table className="table table-custom table-hover border align-middle text-center m-0">
-              <thead>
-                <tr>
-                  <th>S.No</th><th>Date</th><th>Driver</th><th>Vehicle</th><th>Village</th>
-                  {commodities.map((c, i)=><th key={i}>{c}</th>)}
-                  <th>Total</th><th>Remaining</th><th>Freight</th><th>Expense</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ledger.map((item, idx)=>(
-                  <tr key={item.id}>
-                    <td>{idx+1}</td>
-                    <td>{item.date}</td>
-                    <td className="fw-semibold">{item.driver || '-'}</td>
-                    <td><span className="badge bg-light text-dark border">{item.vehicle || '-'}</span></td>
-                    <td>{item.village}</td>
-                    {commodities.map((c, i)=><td key={i}>{item.bags[c] || 0}</td>)}
-                    <td className="fw-bold">{item.totalBags}</td>
-                    <td className="text-danger fw-bold">{item.remainingBags}</td>
-                    <td className="text-success fw-bold">₹{item.freightEarned}</td>
-                    <td className="text-warning fw-bold">₹{item.expenseAmount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-</script>
-
-</body>
-</html>
+                  <div className="mb-3">
+                    <label className="form-label small fw-semibold">Village Dropdown ({activeTaluka} Taluka)</label>
+                    <input type="text" list="villageOptions" className="form-control" placeholder="Search/Select Village" value={tripForm.village} onChange={e=>setTripForm({...tripForm, village: e.target.value})} required />
+                    <datalist id="v
