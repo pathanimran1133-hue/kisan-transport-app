@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FC CONTRACTOR & TRANSPORT - Parbhani / Palam</title>
   
-  <!-- React & Libraries -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -24,364 +21,523 @@
     .card-glass { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); padding: 22px; margin-bottom: 24px; }
     .section-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 20px; }
     .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 14px; font-size: 0.95rem; }
-    .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
     .stat-card { border-radius: 14px; padding: 18px; background: #ffffff; border: 1px solid #e2e8f0; }
-    .nav-pills .nav-link { border-radius: 10px; color: #64748b; font-weight: 600; padding: 10px 18px; }
+    .nav-pills .nav-link { border-radius: 10px; color: #64748b; font-weight: 600; padding: 10px 18px; cursor: pointer; }
     .nav-pills .nav-link.active { background-color: var(--brand); color: white; }
     .table-custom { font-size: 0.85rem; }
     .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
     .badge-role { background: rgba(255, 255, 255, 0.18); color: #ffffff; font-weight: 500; font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-<div id="root"></div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="d-flex justify-content-center align-items-center vh-100" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+  <div class="card-glass text-center" style="width: 380px; border-radius: 24px;">
+    <i class="fa-solid fa-truck-ramp-box text-primary fa-3x mb-3"></i>
+    <h4 class="fw-bold text-dark m-0">FC CONTRACTOR & TRANSPORT</h4>
+    <p class="text-muted small mt-1 mb-4">Parbhani District Grain Management</p>
+    <form id="loginForm">
+      <div class="text-start mb-3">
+        <label class="form-label small fw-semibold">Username</label>
+        <input type="text" id="username" class="form-control" placeholder="admin / operator" required />
+      </div>
+      <div class="text-start mb-4">
+        <label class="form-label small fw-semibold">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3">LOGIN TO SYSTEM</button>
+    </form>
+  </div>
+</div>
 
-<script type="text/babel">
-const { useState, useEffect } = React;
+<!-- MAIN DASHBOARD -->
+<div id="dashboardScreen" class="hidden">
+  <!-- Navbar -->
+  <div class="navbar-custom d-flex justify-content-between align-items-center">
+    <div>
+      <h5 class="m-0 fw-bold"><i class="fa-solid fa-truck-moving me-2"></i>FC CONTRACTOR & TRANSPORT</h5>
+      <span class="badge-role mt-1 d-inline-block" id="roleBadge">
+        <i class="fa-solid fa-user-shield me-1"></i> Role: Admin | Taluka: Palam
+      </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+      </button>
+    </div>
+  </div>
 
-// 115 Pre-configured Villages of Palam Taluka
-const INITIAL_VILLAGES = [
-  "1. Sayangi Bhu.", "2. Raorajur manchak", "3. Raorajur khandare", "4. Raorajur Sudhakar", "5. Dhanewadi", "6. Khulwadi", "7. Umrathadi", "8. Arkhed", "9. Someshwar", "10. Phala", "11. Pharkanda", "12. Digras chairman", "13. Digras kure", "14. Barbadi", "15. Sayangi Thadi", "16. Pimpalgaon Mu.", "17. Bhogav", "18. Rahati", "19. Dutka", "20. Gunj", "21. Parva", "22. Kharabdhanora", "23. Shekhrajur Deshmukh", "24. Shekhrajur chairman", "25. Wadi Bu. Trimbak", "26. Wadi Khu. Nivritti", "27. Gulkhand", "28. Jawala Pa.", "29. Ghoda", "30. Sirpur", "31. Sayala", "32. Rokdewadi", "33. Kapsi", "34. Aajmabad", "35. Ganeshwadi", "36. Puyani", "37. Palam bhutla", "38. Palam badam bai", "39. Palam bhode", "40. Palam Gaikwade", "41. Palam Amol", "42. Palam sakaram", "43. Palam Gautam", "44. Anjanwadi", "45. Pethshivni Savita", "46. Pethshivni Prashant", "47. Sategaon", "48. Selu suryabhan", "49. Selu Keshav", "50. Kolwadi", "51. Paidu Bu. Patale", "52. Paidu Khu. Khiraji", "53. Paidu Mu. Vitthal", "54. Paidu Bu. Pandit", "55. Sarfarazpur", "56. Pethpimpalgaon gulab", "57. Pethpimpalgaon Uttam", "58. Teljapur", "59. Aadgaon", "60. Kandalgaon", "61. Navlagaon", "62. Vanbhujwadi", "63. Anandwadi", "64. Chatori M B G", "65. Chatori Shivaji", "66. Nava", "67. Bandharwadi", "68. Khadi M B G", "69. Khadi dadewad", "70. Khoras Vilas", "71. Khoras sakaram", "72. Tambulgaon", "73. Sadlapur", "74. Sipegaon", "75. Mutkhed", "76. Umra", "77. Bhalkukadi", "78. Konerwadi", "79. Borgaon Bu. Rao Saheb", "80. Borgaon Bu. Hanumant", "81. Jogalgaon", "82. Ukkadgaon", "83. Varkhed", "84. Mojmabad Tanda", "85. Chorvad Deshmukh", "86. Pokharni Devi", "87. Borgaon Khu. Vilas", "88. Borgaon Khu. Subhash", "89. Martandwadi", "90. Mojmabad kadar", "91. Mojmabad bajgir", "92. Banvas Kiran Bedi", "93. Banvas Kai Balasaheb", "94. Girdharwadi", "95. Phatunaik Tanda", "96. Ramapur Tanda", "97. Ramapur", "98. Dongargaon", "99. Tandulwadi Rukmin", "100. Mahadevwadi", "101. Landkawadi", "102. Sadgirwadi", "103. Reva Tanda", "104. Vanwadi", "105. Phuttalav Tanda", "106. Sirsam", "107. Chatori Pathan", "108. Banvas Mathrubhumi", "109. Chorvad Sant", "110. Tandulwadi Swaraj", "111. Palam M B G", "112. Palam Swami", "113. Palam Pratibha", "114. Pethshivni Prabhu", "115. Navalgao"
-];
+  <div class="container-fluid py-4" style="max-width: 1400px;">
+    
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4">
+      <li class="nav-item">
+        <button class="nav-link active" id="tab-trips" onclick="switchTab('trips')">
+          <i class="fa-solid fa-truck-loading me-2"></i>Trip Loading Entry
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="tab-expenses" onclick="switchTab('expenses')">
+          <i class="fa-solid fa-receipt me-2"></i>Payment & Expenses
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="tab-ledger" onclick="switchTab('ledger')">
+          <i class="fa-solid fa-file-invoice-dollar me-2"></i>Monthly Ledgers & Reports
+        </button>
+      </li>
+    </ul>
 
-// Pre-configured Primary Hired Vehicles & Drivers
-const INITIAL_VEHICLES = [
-  { id: 1, number: "MH 22N 1993", driver: "BADI", phone: "9637227967" },
-  { id: 2, number: "MH 48AG 0768", driver: "PANKAJ", phone: "9637227967" },
-  { id: 3, number: "MH 16AY 7737", driver: "KISHAN", phone: "7620446047" },
-  { id: 4, number: "MH 06AQ 6368", driver: "ASHOK", phone: "9011108603" },
-  { id: 5, number: "MH 04FP 0739", driver: "KALE", phone: "9011108603" }
-];
-
-function App() {
-  // Auth State
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState('Admin'); // Admin / Operator
-  const [activeTaluka, setActiveTaluka] = useState('Palam');
-  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
-
-  // Navigation Tabs
-  const [activeTab, setActiveTab] = useState('trips'); // trips, expenses, ledger, masters, contractors
-
-  // Masters State
-  const [villages, setVillages] = useState(INITIAL_VILLAGES);
-  const [vehicles, setVehicles] = useState(INITIAL_VEHICLES);
-  const [dynamicCommodities, setDynamicCommodities] = useState([]);
-  const [newCommodityName, setNewCommodityName] = useState('');
-
-  // Contractors State
-  const [contractors, setContractors] = useState([
-    { id: 1, name: "Palam Central Godown", phone: "9822001122", taluka: "Palam", photo: "" }
-  ]);
-
-  // Trip Entry State
-  const [trips, setTrips] = useState([
-    {
-      id: 101,
-      date: '2026-08-23',
-      taluka: 'Palam',
-      village: '21. Parva',
-      vehicle: 'MH 06AQ 6368',
-      driver: 'ASHOK',
-      phone: '9011108603',
-      wheatBags: 120,
-      riceBags: 100,
-      sugarBags: 50,
-      otherBags: 0,
-      ratePerBag: 11,
-      remainingBags: 5,
-      totalFreight: 2970
-    }
-  ]);
-
-  const [tripForm, setTripForm] = useState({
-    id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '',
-    wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0
-  });
-
-  // Expense Entry State
-  const [expenses, setExpenses] = useState([
-    { id: 201, date: '2026-08-23', taluka: 'Palam', vehicle: 'MH 06AQ 6368', amount: 800, category: 'Diesel' }
-  ]);
-
-  const [expenseForm, setExpenseForm] = useState({
-    id: null, date: '2026-08-23', vehicle: '', amount: '', category: 'Diesel'
-  });
-
-  // Ledger Filters
-  const [ledgerVehicleFilter, setLedgerVehicleFilter] = useState('');
-  const [ledgerMonthFilter, setLedgerMonthFilter] = useState('2026-08');
-
-  // Auto-fill Driver & Phone on Vehicle Select
-  const handleVehicleSelectForTrip = (vehNum) => {
-    const found = vehicles.find(v => v.number === vehNum);
-    setTripForm({
-      ...tripForm,
-      vehicle: vehNum,
-      driver: found ? found.driver : '',
-      phone: found ? found.phone : ''
-    });
-  };
-
-  // Safe Cleanup effect to prevent 'destroy is not a function' runtime error
-  useEffect(() => {
-    let isMounted = true;
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Auth Handler
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (loginForm.username === 'admin' && loginForm.password === 'Admin@123') {
-      setUserRole('Admin');
-      setIsLoggedIn(true);
-    } else if (loginForm.username === 'operator' && loginForm.password === 'Operator@123') {
-      setUserRole('Operator');
-      setActiveTaluka('Palam');
-      setIsLoggedIn(true);
-    } else {
-      alert('Invalid Username or Password! Try admin / Admin@123');
-    }
-  };
-
-  // Mock Notification Trigger
-  const triggerNotification = (type, recipient, details) => {
-    console.log(`[SMS/WhatsApp Alert Sent] To: ${recipient} | Type: ${type} | Details: ${details}`);
-  };
-
-  // Trip Form Actions
-  const handleSaveTrip = (e) => {
-    e.preventDefault();
-    const totalBags = (Number(tripForm.wheatBags)||0) + (Number(tripForm.riceBags)||0) + (Number(tripForm.sugarBags)||0) + (Number(tripForm.otherBags)||0);
-    const calculatedFreight = totalBags * (Number(tripForm.ratePerBag) || 11);
-
-    if (tripForm.id) {
-      setTrips(trips.map(t => t.id === tripForm.id ? { ...tripForm, taluka: activeTaluka, totalFreight: calculatedFreight } : t));
-      alert('Trip entry updated successfully!');
-    } else {
-      const newTrip = { ...tripForm, id: Date.now(), taluka: activeTaluka, totalFreight: calculatedFreight };
-      setTrips([newTrip, ...trips]);
-      alert('Trip entry saved!');
-      triggerNotification('TRIP_CREATED', tripForm.phone, `New Trip for ${tripForm.village}: ${totalBags} bags. Freight: ₹${calculatedFreight}`);
-    }
-
-    setTripForm({ id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '', wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0 });
-  };
-
-  const handleDeleteTrip = (id) => {
-    if (confirm("Are you sure you want to delete this trip record?")) {
-      setTrips(trips.filter(t => t.id !== id));
-    }
-  };
-
-  // Expense Form Actions
-  const handleSaveExpense = (e) => {
-    e.preventDefault();
-    if (expenseForm.id) {
-      setExpenses(expenses.map(exp => exp.id === expenseForm.id ? { ...expenseForm, taluka: activeTaluka, amount: Number(expenseForm.amount) } : exp));
-      alert('Expense record updated!');
-    } else {
-      const newExp = { ...expenseForm, id: Date.now(), taluka: activeTaluka, amount: Number(expenseForm.amount) };
-      setExpenses([newExp, ...expenses]);
-      alert('Expense record saved!');
-      triggerNotification('EXPENSE_CREATED', 'Admin', `Expense added for ${expenseForm.vehicle}: ₹${expenseForm.amount} (${expenseForm.category})`);
-    }
-
-    setExpenseForm({ id: null, date: '2026-08-23', vehicle: '', amount: '', category: 'Diesel' });
-  };
-
-  const handleDeleteExpense = (id) => {
-    if (confirm("Delete this expense record?")) {
-      setExpenses(expenses.filter(e => e.id !== id));
-    }
-  };
-
-  // Dynamic Commodity
-  const handleAddCommodity = () => {
-    if (newCommodityName.trim() && !dynamicCommodities.includes(newCommodityName.trim())) {
-      setDynamicCommodities([...dynamicCommodities, newCommodityName.trim()]);
-      setNewCommodityName('');
-      alert('New Commodity Added globally!');
-    }
-  };
-
-  // PDF Export
-  const exportPDF = (ledgerData, selectedVeh) => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`FC CONTRACTOR & TRANSPORT - ${activeTaluka.toUpperCase()}`, 14, 15);
-    doc.setFontSize(11);
-    doc.text(`Vehicle Ledger Report: ${selectedVeh || 'All Vehicles'} (${ledgerMonthFilter})`, 14, 23);
-
-    const rows = ledgerData.map((row, idx) => [
-      idx + 1, row.date, row.village, row.wheatBags, row.riceBags, row.sugarBags, row.otherBags,
-      (row.wheatBags + row.riceBags + row.sugarBags + row.otherBags), row.remainingBags, `Rs. ${row.totalFreight}`, `Rs. ${row.expenseAmount}`, row.expenseReason
-    ]);
-
-    doc.autoTable({
-      head: [['S.No', 'Date', 'Village', 'Wheat', 'Rice', 'Sugar', 'Other', 'Total Bags', 'Remaining', 'Freight', 'Expense', 'Expense Reason']],
-      body: rows,
-      startY: 30,
-      theme: 'grid',
-      headStyles: { fillColor: [30, 58, 138] }
-    });
-
-    doc.save(`Ledger_${selectedVeh || 'All'}_${ledgerMonthFilter}.pdf`);
-  };
-
-  // Excel Export
-  const exportExcel = (ledgerData) => {
-    const ws = XLSX.utils.json_to_sheet(ledgerData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Monthly Ledger");
-    XLSX.writeFile(wb, `Transport_Ledger_${ledgerMonthFilter}.xlsx`);
-  };
-
-  // Filter Scope Check
-  const filteredTripsScope = userRole === 'Operator' ? trips.filter(t => t.taluka === activeTaluka) : trips;
-  const filteredExpensesScope = userRole === 'Operator' ? expenses.filter(e => e.taluka === activeTaluka) : expenses;
-
-  // Ledger Compiled Data Calculation
-  const getCompiledLedger = () => {
-    let combined = [];
-
-    filteredTripsScope.forEach(trip => {
-      if (ledgerVehicleFilter && trip.vehicle !== ledgerVehicleFilter) return;
-      if (trip.date.substring(0, 7) !== ledgerMonthFilter) return;
-
-      combined.push({
-        id: `trip-${trip.id}`,
-        date: trip.date,
-        village: trip.village,
-        vehicle: trip.vehicle,
-        wheatBags: trip.wheatBags || 0,
-        riceBags: trip.riceBags || 0,
-        sugarBags: trip.sugarBags || 0,
-        otherBags: trip.otherBags || 0,
-        remainingBags: trip.remainingBags || 0,
-        totalFreight: trip.totalFreight || 0,
-        expenseAmount: 0,
-        expenseReason: '-'
-      });
-    });
-
-    filteredExpensesScope.forEach(exp => {
-      if (ledgerVehicleFilter && exp.vehicle !== ledgerVehicleFilter) return;
-      if (exp.date.substring(0, 7) !== ledgerMonthFilter) return;
-
-      combined.push({
-        id: `exp-${exp.id}`,
-        date: exp.date,
-        village: '[EXPENSE ONLY]',
-        vehicle: exp.vehicle,
-        wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, remainingBags: 0,
-        totalFreight: 0,
-        expenseAmount: exp.amount,
-        expenseReason: exp.category
-      });
-    });
-
-    return combined.sort((a, b) => new Date(b.date) - new Date(a.date));
-  };
-
-  const compiledLedgerData = getCompiledLedger();
-  const ledgerTotalFreight = compiledLedgerData.reduce((a, b) => a + b.totalFreight, 0);
-  const ledgerTotalExpense = compiledLedgerData.reduce((a, b) => a + b.expenseAmount, 0);
-  const ledgerNetProfit = ledgerTotalFreight - ledgerTotalExpense;
-
-  if (!isLoggedIn) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)' }}>
-        <div className="card-glass text-center" style={{ width: '380px', borderRadius: '24px' }}>
-          <i className="fa-solid fa-truck-ramp-box text-primary fa-3x mb-3"></i>
-          <h4 className="fw-bold text-dark m-0">FC CONTRACTOR & TRANSPORT</h4>
-          <p className="text-muted small mt-1 mb-4">Parbhani District Grain Management</p>
-          <form onSubmit={handleLogin}>
-            <div className="text-start mb-3">
-              <label className="form-label small fw-semibold">Username</label>
-              <input type="text" className="form-control" placeholder="admin / operator" value={loginForm.username} onChange={e=>setLoginForm({...loginForm, username: e.target.value})} required />
+    <!-- 1. TRIP LOADING ENTRY PAGE -->
+    <div id="page-trips" class="row g-4">
+      <div class="col-12 col-lg-5">
+        <div class="card-glass">
+          <div class="section-title">
+            <span><i class="fa-solid fa-pen-to-square text-primary me-2"></i>New Trip Loading Entry</span>
+          </div>
+          <form id="tripForm" onsubmit="saveTrip(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Trip Date</label>
+              <input type="date" id="tripDate" class="form-control" required />
             </div>
-            <div className="text-start mb-4">
-              <label className="form-label small fw-semibold">Password</label>
-              <input type="password" className="form-control" placeholder="••••••••" value={loginForm.password} onChange={e=>setLoginForm({...loginForm, password: e.target.value})} required />
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Village Dropdown (Palam Taluka - 115 Villages)</label>
+              <input type="text" list="villageOptions" id="tripVillage" class="form-control" placeholder="Search/Select Village" required />
+              <datalist id="villageOptions"></datalist>
             </div>
-            <button type="submit" className="btn btn-primary w-100 py-2 fw-bold rounded-3">LOGIN TO SYSTEM</button>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Vehicle Select (Auto-fills Driver)</label>
+              <select id="tripVehicle" class="form-select" onchange="autoFillDriver()" required>
+                <option value="">-- Choose Vehicle --</option>
+              </select>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Driver Name</label>
+                <input type="text" id="tripDriver" class="form-control bg-light" readonly placeholder="Auto-filled" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Contact Phone</label>
+                <input type="text" id="tripPhone" class="form-control bg-light" readonly placeholder="Auto-filled" />
+              </div>
+            </div>
+
+            <!-- Compulsory Grain Bags -->
+            <div class="p-3 bg-light rounded-3 mb-3 border">
+              <label class="form-label small fw-bold text-uppercase text-secondary mb-2">Compulsory Grain Breakdown (50kg Bags)</label>
+              <div class="row g-2">
+                <div class="col-4">
+                  <label class="form-label extra-small fw-semibold">Wheat Bags</label>
+                  <input type="number" id="wheatBags" class="form-control form-control-sm" value="0" />
+                </div>
+                <div class="col-4">
+                  <label class="form-label extra-small fw-semibold">Rice Bags</label>
+                  <input type="number" id="riceBags" class="form-control form-control-sm" value="0" />
+                </div>
+                <div class="col-4">
+                  <label class="form-label extra-small fw-semibold">Sugar Bags</label>
+                  <input type="number" id="sugarBags" class="form-control form-control-sm" value="0" />
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Rate Per Bag (₹)</label>
+                <input type="number" id="ratePerBag" class="form-control" value="11" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold text-danger">Remaining / Pending Bags</label>
+                <input type="number" id="remainingBags" class="form-control" placeholder="Baki Bag" value="0" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+              <i class="fa-solid fa-floppy-disk me-2"></i>SAVE TRIP LOADING
+            </button>
           </form>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div>
-      {/* Top Navbar */}
-      <div className="navbar-custom d-flex justify-content-between align-items-center">
-        <div>
-          <h5 className="m-0 fw-bold"><i className="fa-solid fa-truck-moving me-2"></i>FC CONTRACTOR & TRANSPORT</h5>
-          <span className="badge-role mt-1 d-inline-block">
-            <i className="fa-solid fa-user-shield me-1"></i> Role: {userRole} | Taluka Scope: {userRole === 'Admin' ? 'All Talukas' : activeTaluka}
-          </span>
+      <!-- Trip Table -->
+      <div class="col-12 col-lg-7">
+        <div class="card-glass">
+          <div class="section-title">
+            <span><i class="fa-solid fa-list text-primary me-2"></i>Active Trip Loading Entries</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-custom table-hover border align-middle text-center m-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Village</th>
+                  <th>Vehicle / Driver</th>
+                  <th>Bags (W/R/S)</th>
+                  <th>Pending</th>
+                  <th>Freight (₹)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tripTableBody"></tbody>
+            </table>
+          </div>
         </div>
-        <div className="d-flex align-items-center gap-3">
-          {userRole === 'Admin' && (
-            <select className="form-select form-select-sm" value={activeTaluka} onChange={e=>setActiveTaluka(e.target.value)} style={{ width: '150px' }}>
-              <option value="Palam">Palam Taluka</option>
-              <option value="Parbhani">Parbhani City</option>
-              <option value="Gangakhed">Gangakhed</option>
-              <option value="Pathri">Pathri</option>
-            </select>
-          )}
-          <button className="btn btn-outline-light btn-sm rounded-pill px-3" onClick={()=>setIsLoggedIn(false)}>
-            <i className="fa-solid fa-right-from-bracket me-1"></i> Logout
-          </button>
+      </div>
+    </div>
+
+    <!-- 2. PAYMENT & EXPENSE ENTRY PAGE -->
+    <div id="page-expenses" class="row g-4 hidden">
+      <div class="col-12 col-lg-4">
+        <div class="card-glass">
+          <div class="section-title">
+            <span><i class="fa-solid fa-receipt text-warning me-2"></i>Record Payment / Expense</span>
+          </div>
+          <form id="expenseForm" onsubmit="saveExpense(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Expense Date</label>
+              <input type="date" id="expDate" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Vehicle Number</label>
+              <select id="expVehicle" class="form-select" required>
+                <option value="">-- Choose Vehicle --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Amount (₹)</label>
+              <input type="number" id="expAmount" class="form-control" placeholder="Amount in Rupees" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Category / Reason</label>
+              <select id="expCategory" class="form-select">
+                <option value="Diesel">Diesel</option>
+                <option value="Driver Advance">Driver Advance</option>
+                <option value="Maintenance">Maintenance / Repair</option>
+                <option value="Toll/Misc">Toll / Misc Charges</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 py-2 fw-bold text-dark">
+              <i class="fa-solid fa-plus me-2"></i>SAVE EXPENSE ENTRY
+            </button>
+          </form>
         </div>
       </div>
 
-      <div className="container-fluid py-4" style={{ maxWidth: '1400px' }}>
-        
-        {/* Navigation Tabs */}
-        <ul className="nav nav-pills mb-4">
-          <li className="nav-item">
-            <button className={`nav-link ${activeTab === 'trips' ? 'active' : ''}`} onClick={()=>setActiveTab('trips')}>
-              <i className="fa-solid fa-truck-loading me-2"></i>Trip Loading Entry
-            </button>
-          </li>
-          <li className="nav-item">
-            <button className={`nav-link ${activeTab === 'expenses' ? 'active' : ''}`} onClick={()=>setActiveTab('expenses')}>
-              <i className="fa-solid fa-receipt me-2"></i>Payment & Expenses
-            </button>
-          </li>
-          <li className="nav-item">
-            <button className={`nav-link ${activeTab === 'ledger' ? 'active' : ''}`} onClick={()=>setActiveTab('ledger')}>
-              <i className="fa-solid fa-file-invoice-dollar me-2"></i>Monthly Ledgers & Reports
-            </button>
-          </li>
-          <li className="nav-item">
-            <button className={`nav-link ${activeTab === 'masters' ? 'active' : ''}`} onClick={()=>setActiveTab('masters')}>
-              <i className="fa-solid fa-sliders me-2"></i>Master Setup
-            </button>
-          </li>
-        </ul>
+      <div class="col-12 col-lg-8">
+        <div class="card-glass">
+          <div class="section-title">
+            <span><i class="fa-solid fa-list-check text-warning me-2"></i>Expense Audit Records</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-custom table-hover border align-middle text-center m-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Vehicle Number</th>
+                  <th>Category / Reason</th>
+                  <th>Amount Paid (₹)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="expenseTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        {/* 1. TRIP LOADING ENTRY PAGE */}
-        {activeTab === 'trips' && (
-          <div className="row g-4">
-            <div className="col-12 col-lg-5">
-              <div className="card-glass">
-                <div className="section-title">
-                  <span><i className="fa-solid fa-pen-to-square text-primary me-2"></i>{tripForm.id ? 'Edit Trip Entry' : 'New Trip Loading Entry'}</span>
-                  {tripForm.id && <button className="btn btn-sm btn-outline-secondary" onClick={()=>setTripForm({ id: null, date: '2026-08-23', village: '', vehicle: '', driver: '', phone: '', wheatBags: 0, riceBags: 0, sugarBags: 0, otherBags: 0, ratePerBag: 11, remainingBags: 0 })}>Cancel Edit</button>}
-                </div>
-                <form onSubmit={handleSaveTrip}>
-                  <div className="mb-3">
-                    <label className="form-label small fw-semibold">Trip Date</label>
-                    <input type="date" className="form-control" value={tripForm.date} onChange={e=>setTripForm({...tripForm, date: e.target.value})} required />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label small fw-semibold">Village Dropdown ({activeTaluka} Taluka)</label>
-                    <input type="text" list="villageOptions" className="form-control" placeholder="Search/Select Village" value={tripForm.village} onChange={e=>setTripForm({...tripForm, village: e.target.value})} required />
-                    <datalist id="v
+    <!-- 3. MONTHLY LEDGERS & REPORTING -->
+    <div id="page-ledger" class="hidden">
+      <div class="card-glass mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label small fw-semibold">Vehicle-wise Filter</label>
+            <select id="ledgerVehicleFilter" class="form-select" onchange="renderLedger()">
+              <option value="">-- All Hired Vehicles --</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4 d-flex gap-2">
+            <button class="btn btn-danger w-100 fw-bold" onclick="exportPDF()">
+              <i class="fa-solid fa-file-pdf me-2"></i>Export PDF
+            </button>
+            <button class="btn btn-success w-100 fw-bold" onclick="exportExcel()">
+              <i class="fa-solid fa-file-excel me-2"></i>Export Excel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="stat-card border-start border-4 border-success">
+            <span className="text-uppercase text-muted fw-bold small">Total Freight</span>
+            <h3 class="fw-bold text-success m-0 mt-1" id="totalFreightDisp">₹0</h3>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="stat-card border-start border-4 border-warning">
+            <span className="text-uppercase text-muted fw-bold small">Total Expenses</span>
+            <h3 class="fw-bold text-warning m-0 mt-1" id="totalExpenseDisp">₹0</h3>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="stat-card border-start border-4 border-primary">
+            <span className="text-uppercase text-muted fw-bold small">Final Net Profit</span>
+            <h3 class="fw-bold text-primary m-0 mt-1" id="netProfitDisp">₹0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ledger Table -->
+      <div class="card-glass">
+        <div class="section-title">
+          <span><i class="fa-solid fa-table text-primary me-2"></i>Monthly Vehicle Ledger Statement</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom table-hover border align-middle text-center m-0">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Date</th>
+                <th>Village Name</th>
+                <th>Vehicle</th>
+                <th>Wheat</th>
+                <th>Rice</th>
+                <th>Sugar</th>
+                <th>Total Bags</th>
+                <th>Remaining</th>
+                <th>Freight Earned (₹)</th>
+                <th>Expense (₹)</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Data Masters
+  const VILLAGES = [
+    "1. Sayangi Bhu.", "2. Raorajur manchak", "3. Raorajur khandare", "4. Raorajur Sudhakar", "5. Dhanewadi", "6. Khulwadi", "7. Umrathadi", "8. Arkhed", "9. Someshwar", "10. Phala", "11. Pharkanda", "12. Digras chairman", "13. Digras kure", "14. Barbadi", "15. Sayangi Thadi", "16. Pimpalgaon Mu.", "17. Bhogav", "18. Rahati", "19. Dutka", "20. Gunj", "21. Parva", "22. Kharabdhanora", "23. Shekhrajur Deshmukh", "24. Shekhrajur chairman", "25. Wadi Bu. Trimbak", "26. Wadi Khu. Nivritti", "27. Gulkhand", "28. Jawala Pa.", "29. Ghoda", "30. Sirpur", "31. Sayala", "32. Rokdewadi", "33. Kapsi", "34. Aajmabad", "35. Ganeshwadi", "36. Puyani", "37. Palam bhutla", "38. Palam badam bai", "39. Palam bhode", "40. Palam Gaikwade", "41. Palam Amol", "42. Palam sakaram", "43. Palam Gautam", "44. Anjanwadi", "45. Pethshivni Savita", "46. Pethshivni Prashant", "47. Sategaon", "48. Selu suryabhan", "49. Selu Keshav", "50. Kolwadi", "51. Paidu Bu. Patale", "52. Paidu Khu. Khiraji", "53. Paidu Mu. Vitthal", "54. Paidu Bu. Pandit", "55. Sarfarazpur", "56. Pethpimpalgaon gulab", "57. Pethpimpalgaon Uttam", "58. Teljapur", "59. Aadgaon", "60. Kandalgaon", "61. Navlagaon", "62. Vanbhujwadi", "63. Anandwadi", "64. Chatori M B G", "65. Chatori Shivaji", "66. Nava", "67. Bandharwadi", "68. Khadi M B G", "69. Khadi dadewad", "70. Khoras Vilas", "71. Khoras sakaram", "72. Tambulgaon", "73. Sadlapur", "74. Sipegaon", "75. Mutkhed", "76. Umra", "77. Bhalkukadi", "78. Konerwadi", "79. Borgaon Bu. Rao Saheb", "80. Borgaon Bu. Hanumant", "81. Jogalgaon", "82. Ukkadgaon", "83. Varkhed", "84. Mojmabad Tanda", "85. Chorvad Deshmukh", "86. Pokharni Devi", "87. Borgaon Khu. Vilas", "88. Borgaon Khu. Subhash", "89. Martandwadi", "90. Mojmabad kadar", "91. Mojmabad bajgir", "92. Banvas Kiran Bedi", "93. Banvas Kai Balasaheb", "94. Girdharwadi", "95. Phatunaik Tanda", "96. Ramapur Tanda", "97. Ramapur", "98. Dongargaon", "99. Tandulwadi Rukmin", "100. Mahadevwadi", "101. Landkawadi", "102. Sadgirwadi", "103. Reva Tanda", "104. Vanwadi", "105. Phuttalav Tanda", "106. Sirsam", "107. Chatori Pathan", "108. Banvas Mathrubhumi", "109. Chorvad Sant", "110. Tandulwadi Swaraj", "111. Palam M B G", "112. Palam Swami", "113. Palam Pratibha", "114. Pethshivni Prabhu", "115. Navalgao"
+  ];
+
+  const VEHICLES = [
+    { number: "MH 22N 1993", driver: "BADI", phone: "9637227967" },
+    { number: "MH 48AG 0768", driver: "PANKAJ", phone: "9637227967" },
+    { number: "MH 16AY 7737", driver: "KISHAN", phone: "7620446047" },
+    { number: "MH 06AQ 6368", driver: "ASHOK", phone: "9011108603" },
+    { number: "MH 04FP 0739", driver: "KALE", phone: "9011108603" }
+  ];
+
+  let trips = [
+    { id: 1, date: '2026-08-23', village: '21. Parva', vehicle: 'MH 06AQ 6368', driver: 'ASHOK', phone: '9011108603', wheat: 100, rice: 120, sugar: 0, rate: 11, remaining: 5, freight: 2420 }
+  ];
+
+  let expenses = [
+    { id: 1, date: '2026-08-23', vehicle: 'MH 06AQ 6368', amount: 500, category: 'Diesel' }
+  ];
+
+  // Login handler
+  document.getElementById('loginForm').onsubmit = function(e) {
+    e.preventDefault();
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    if ((u === 'admin' && p === 'Admin@123') || (u === 'operator' && p === 'Operator@123')) {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('dashboardScreen').classList.remove('hidden');
+      initApp();
+    } else {
+      alert('Galat Login! Username: admin / Password: Admin@123');
+    }
+  };
+
+  function logout() {
+    document.getElementById('dashboardScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+  }
+
+  function initApp() {
+    // Populate Dropdowns
+    const vList = document.getElementById('villageOptions');
+    vList.innerHTML = VILLAGES.map(v => `<option value="${v}">`).join('');
+
+    const vehSelects = [document.getElementById('tripVehicle'), document.getElementById('expVehicle'), document.getElementById('ledgerVehicleFilter')];
+    vehSelects.forEach(s => {
+      s.innerHTML = '<option value="">-- Select Vehicle --</option>' + VEHICLES.map(v => `<option value="${v.number}">${v.number} (${v.driver})</option>`).join('');
+    });
+
+    document.getElementById('tripDate').valueAsDate = new Date();
+    document.getElementById('expDate').valueAsDate = new Date();
+
+    renderTrips();
+    renderExpenses();
+    renderLedger();
+  }
+
+  function autoFillDriver() {
+    const vehNum = document.getElementById('tripVehicle').value;
+    const found = VEHICLES.find(v => v.number === vehNum);
+    document.getElementById('tripDriver').value = found ? found.driver : '';
+    document.getElementById('tripPhone').value = found ? found.phone : '';
+  }
+
+  function switchTab(tab) {
+    ['trips', 'expenses', 'ledger'].forEach(t => {
+      document.getElementById(`page-${t}`).classList.add('hidden');
+      document.getElementById(`tab-${t}`).classList.remove('active');
+    });
+    document.getElementById(`page-${tab}`).classList.remove('hidden');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+  }
+
+  function saveTrip(e) {
+    e.preventDefault();
+    const w = Number(document.getElementById('wheatBags').value) || 0;
+    const r = Number(document.getElementById('riceBags').value) || 0;
+    const s = Number(document.getElementById('sugarBags').value) || 0;
+    const rate = Number(document.getElementById('ratePerBag').value) || 11;
+    const totalBags = w + r + s;
+
+    const newTrip = {
+      id: Date.now(),
+      date: document.getElementById('tripDate').value,
+      village: document.getElementById('tripVillage').value,
+      vehicle: document.getElementById('tripVehicle').value,
+      driver: document.getElementById('tripDriver').value,
+      phone: document.getElementById('tripPhone').value,
+      wheat: w, rice: r, sugar: s,
+      rate: rate,
+      remaining: Number(document.getElementById('remainingBags').value) || 0,
+      freight: totalBags * rate
+    };
+
+    trips.unshift(newTrip);
+    renderTrips();
+    renderLedger();
+    alert('Trip Entry Saved!');
+  }
+
+  function deleteTrip(id) {
+    trips = trips.filter(t => t.id !== id);
+    renderTrips();
+    renderLedger();
+  }
+
+  function renderTrips() {
+    const tbody = document.getElementById('tripTableBody');
+    tbody.innerHTML = trips.map(t => `
+      <tr>
+        <td>${t.date}</td>
+        <td class="text-start">${t.village}</td>
+        <td><b>${t.vehicle}</b><br><small>${t.driver}</small></td>
+        <td>${t.wheat} / ${t.rice} / ${t.sugar}</td>
+        <td class="text-danger fw-bold">${t.remaining}</td>
+        <td class="text-success fw-bold">₹${t.freight}</td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteTrip(${t.id})"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function saveExpense(e) {
+    e.preventDefault();
+    const newExp = {
+      id: Date.now(),
+      date: document.getElementById('expDate').value,
+      vehicle: document.getElementById('expVehicle').value,
+      amount: Number(document.getElementById('expAmount').value),
+      category: document.getElementById('expCategory').value
+    };
+    expenses.unshift(newExp);
+    renderExpenses();
+    renderLedger();
+    alert('Expense Saved!');
+  }
+
+  function deleteExpense(id) {
+    expenses = expenses.filter(e => e.id !== id);
+    renderExpenses();
+    renderLedger();
+  }
+
+  function renderExpenses() {
+    const tbody = document.getElementById('expenseTableBody');
+    tbody.innerHTML = expenses.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td><b>${e.vehicle}</b></td>
+        <td><span class="badge bg-light text-dark border">${e.category}</span></td>
+        <td class="text-warning fw-bold">₹${e.amount}</td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteExpense(${e.id})"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  function renderLedger() {
+    const vehFilter = document.getElementById('ledgerVehicleFilter').value;
+    const tbody = document.getElementById('ledgerTableBody');
+    let compiled = [];
+
+    trips.forEach(t => {
+      if (!vehFilter || t.vehicle === vehFilter) {
+        compiled.push({ date: t.date, village: t.village, vehicle: t.vehicle, wheat: t.wheat, rice: t.rice, sugar: t.sugar, totalBags: t.wheat + t.rice + t.sugar, remaining: t.remaining, freight: t.freight, expense: 0, reason: '-' });
+      }
+    });
+
+    expenses.forEach(e => {
+      if (!vehFilter || e.vehicle === vehFilter) {
+        compiled.push({ date: e.date, village: '[EXPENSE]', vehicle: e.vehicle, wheat: 0, rice: 0, sugar: 0, totalBags: 0, remaining: 0, freight: 0, expense: e.amount, reason: e.category });
+      }
+    });
+
+    let totF = 0, totE = 0;
+    tbody.innerHTML = compiled.map((r, i) => {
+      totF += r.freight;
+      totE += r.expense;
+      return `
+        <tr>
+          <td>${i+1}</td>
+          <td>${r.date}</td>
+          <td class="text-start">${r.village}</td>
+          <td><b>${r.vehicle}</b></td>
+          <td>${r.wheat}</td>
+          <td>${r.rice}</td>
+          <td>${r.sugar}</td>
+          <td class="fw-bold">${r.totalBags}</td>
+          <td class="text-danger fw-bold">${r.remaining}</td>
+          <td class="text-success fw-bold">₹${r.freight}</td>
+          <td class="text-warning fw-bold">₹${r.expense}</td>
+          <td>${r.reason}</td>
+        </tr>
+      `;
+    }).join('');
+
+    document.getElementById('totalFreightDisp').innerText = `₹${totF}`;
+    document.getElementById('totalExpenseDisp').innerText = `₹${totE}`;
+    document.getElementById('netProfitDisp').innerText = `₹${totF - totE}`;
+  }
+
+  function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("FC CONTRACTOR & TRANSPORT - PALAM LEDGER", 14, 15);
+    doc.autoTable({ html: '#ledgerTableBody', startY: 25 });
+    doc.save("Ledger_Report.pdf");
+  }
+
+  function exportExcel() {
+    const table = document.querySelector("#page-ledger table");
+    const wb = XLSX.utils.table_to_book(table);
+    XLSX.writeFile(wb, "Ledger_Report.xlsx");
+  }
+</script>
+
+</body>
+</html>
