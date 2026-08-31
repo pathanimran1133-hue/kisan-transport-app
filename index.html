@@ -3,66 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FC CONTRACTOR & TRANSPORT - Parbhani / Palam</title>
-  
-  <!-- Libraries -->
+  <title>Grain Contractor & Transport - Management System</title>
+
+  <!-- External Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  
-  <!-- Styling -->
+
+  <!-- UI Frameworks & Styling -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root { --primary: #0f172a; --brand: #1e3a8a; --accent: #2563eb; --bg: #f8fafc; }
-    body { background-color: var(--bg); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; }
-    .navbar-custom { background: linear-gradient(135deg, var(--primary) 0%, var(--brand) 100%); color: white; padding: 14px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .card-glass { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); padding: 22px; margin-bottom: 24px; }
-    .section-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 20px; }
-    .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 14px; font-size: 0.95rem; }
-    .stat-card { border-radius: 14px; padding: 18px; background: #ffffff; border: 1px solid #e2e8f0; }
-    .nav-pills .nav-link { border-radius: 10px; color: #64748b; font-weight: 600; padding: 10px 18px; cursor: pointer; }
-    .nav-pills .nav-link.active { background-color: var(--brand); color: white; }
-    .table-custom { font-size: 0.85rem; }
-    .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
-    .badge-role { background: rgba(255, 255, 255, 0.18); color: #ffffff; font-weight: 500; font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; }
-    .hidden { display: none !important; }
+    :root {
+      --primary: #0f172a;
+      --brand-blue: #1e3a8a;
+      --accent-blue: #2563eb;
+      --bg-slate: #f8fafc;
+      --border-color: #e2e8f0;
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1e293b;
+    }
+
+    /* Navigation Bar */
+    .top-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: white;
+      padding: 16px 24px;
+      border-bottom: 3px solid var(--accent-blue);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .letterhead-preview-banner {
+      background: #eff6ff;
+      border-left: 4px solid var(--accent-blue);
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    /* Cards */
+    .glass-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-section-header {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* Inputs */
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Tabs */
+    .nav-pills .nav-link {
+      border-radius: 10px;
+      color: #64748b;
+      font-weight: 600;
+      padding: 11px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--brand-blue);
+      color: white;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    }
+
+    /* Tables */
+    .table-custom {
+      font-size: 0.88rem;
+    }
+
+    .table-custom th {
+      background-color: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      padding: 12px;
+    }
+
+    .badge-role {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    /* SMS Log Item */
+    .sms-log-item {
+      background: #ffffff;
+      border-left: 3px solid #10b981;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
 
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" class="d-flex justify-content-center align-items-center vh-100" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
-  <div class="card-glass text-center" style="width: 380px; border-radius: 24px;">
-    <i class="fa-solid fa-truck-ramp-box text-primary fa-3x mb-3"></i>
-    <h4 class="fw-bold text-dark m-0">FC CONTRACTOR & TRANSPORT</h4>
-    <p class="text-muted small mt-1 mb-4">Parbhani District Grain Management</p>
+  <div class="glass-card text-center" style="width: 400px; border-radius: 24px;">
+    <div class="mb-3">
+      <i class="fa-solid fa-truck-moving text-primary fa-3x"></i>
+    </div>
+    <h4 class="fw-bold text-dark m-0">GRAIN CONTRACTOR & TRANSPORT</h4>
+    <p class="text-muted small mt-1 mb-4">Parbhani Anaj Transport System</p>
+    
     <form id="loginForm">
+      <div class="text-start mb-3">
+        <label class="form-label small fw-semibold">Role Select Karein</label>
+        <select id="loginRole" class="form-select mb-2" onchange="toggleTalukaSelect()">
+          <option value="Admin">District Admin</option>
+          <option value="Operator">Taluka Operator</option>
+        </select>
+      </div>
+
+      <div class="text-start mb-3 hidden" id="talukaSelectGroup">
+        <label class="form-label small fw-semibold">Taluka Select Karein</label>
+        <select id="loginTaluka" class="form-select">
+          <option value="Palam">Palam Taluka</option>
+          <option value="Parbhani">Parbhani</option>
+          <option value="Gangakhed">Gangakhed</option>
+          <option value="Pathri">Pathri</option>
+          <option value="Jintur">Jintur</option>
+        </select>
+      </div>
+
       <div class="text-start mb-3">
         <label class="form-label small fw-semibold">Username</label>
         <input type="text" id="username" class="form-control" placeholder="admin / operator" required />
       </div>
+
       <div class="text-start mb-4">
         <label class="form-label small fw-semibold">Password</label>
         <input type="password" id="password" class="form-control" placeholder="••••••••" required />
       </div>
-      <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3">LOGIN TO SYSTEM</button>
+
+      <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold rounded-3">
+        <i class="fa-solid fa-right-to-bracket me-2"></i>LOGIN
+      </button>
     </form>
+    
+    <div class="mt-3">
+      <small class="text-muted">Default Admin: <b>admin</b> / <b>Admin@123</b></small>
+    </div>
   </div>
 </div>
 
 <!-- MAIN DASHBOARD -->
 <div id="dashboardScreen" class="hidden">
-  <!-- Navbar -->
-  <div class="navbar-custom d-flex justify-content-between align-items-center">
+  
+  <!-- Header -->
+  <div class="top-header d-flex justify-content-between align-items-center">
     <div>
-      <h5 class="m-0 fw-bold"><i class="fa-solid fa-truck-moving me-2"></i>FC CONTRACTOR & TRANSPORT</h5>
-      <span class="badge-role mt-1 d-inline-block" id="roleBadge">
-        <i class="fa-solid fa-user-shield me-1"></i> Role: Admin | Taluka: Palam
-      </span>
+      <h4 class="m-0 fw-bold"><i class="fa-solid fa-truck-field me-2"></i>GRAIN CONTRACTOR & TRANSPORT</h4>
+      <div class="d-flex align-items-center gap-2 mt-1">
+        <span class="badge-role" id="roleDisplayBadge"><i class="fa-solid fa-user-shield me-1"></i> Role: Admin</span>
+        <span class="badge bg-warning text-dark fw-bold" id="talukaDisplayBadge">Taluka: Palam</span>
+        <small class="text-light ms-2"><i class="fa-solid fa-phone me-1"></i>Admin Contact: 8484990525</small>
+      </div>
     </div>
     <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-warning btn-sm fw-semibold rounded-pill px-3" onclick="openTalukaRegistrationModal()">
+        <i class="fa-solid fa-plus-circle me-1"></i> Naya Taluka Register Karein
+      </button>
       <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="logout()">
         <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
       </button>
@@ -70,75 +214,105 @@
   </div>
 
   <div class="container-fluid py-4" style="max-width: 1400px;">
-    
+
+    <!-- Digital Letterhead Header Banner -->
+    <div class="letterhead-preview-banner d-flex justify-content-between align-items-center">
+      <div>
+        <h6 class="fw-bold text-dark m-0"><i class="fa-solid fa-file-invoice me-2 text-primary"></i>OFFICIAL DIGITAL LETTERHEAD HEADER (PDF Reports Me Auto-Add)</h6>
+        <div class="small text-secondary mt-1">
+          <b>Main Title:</b> Grain Contractor & Transport (Contact: 8484990525) | 
+          <span id="letterheadSubHeader" class="text-primary fw-bold">[Palam] Contractor: FC Contractor & Transport (Contact: 96655 25055)</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-sm btn-outline-primary fw-bold" onclick="showSmsLogModal()">
+          <i class="fa-solid fa-comment-sms me-1"></i> SMS Alert Logs (<span id="smsCountBadge">0</span>)
+        </button>
+      </div>
+    </div>
+
     <!-- Navigation Tabs -->
-    <ul class="nav nav-pills mb-4">
+    <ul class="nav nav-pills mb-4" id="mainTabNav">
       <li class="nav-item">
         <button class="nav-link active" id="tab-trips" onclick="switchTab('trips')">
-          <i class="fa-solid fa-truck-loading me-2"></i>Trip Loading Entry
+          <i class="fa-solid fa-truck-loading me-2"></i>1. Trip Loading Entry
         </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" id="tab-expenses" onclick="switchTab('expenses')">
-          <i class="fa-solid fa-receipt me-2"></i>Payment & Expenses
+        <button class="nav-link" id="tab-receive" onclick="switchTab('receive')">
+          <i class="fa-solid fa-boxes-packing me-2"></i>2. Receive & Issue Entry
         </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" id="tab-ledger" onclick="switchTab('ledger')">
-          <i class="fa-solid fa-file-invoice-dollar me-2"></i>Monthly Ledgers & Reports
+        <button class="nav-link" id="tab-driver" onclick="switchTab('driver')">
+          <i class="fa-solid fa-hand-holding-dollar me-2"></i>3. Driver Payment Entry
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="tab-reports" onclick="switchTab('reports')">
+          <i class="fa-solid fa-chart-line me-2"></i>4. Monthly Reports & Exports
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="tab-masters" onclick="switchTab('masters')">
+          <i class="fa-solid fa-sliders me-2"></i>Master Setup
         </button>
       </li>
     </ul>
 
-    <!-- 1. TRIP LOADING ENTRY PAGE -->
-    <div id="page-trips" class="row g-4">
+    <!-- SECTION 1: TRIP LOADING ENTRY -->
+    <div id="section-trips" class="row g-4">
       <div class="col-12 col-lg-5">
-        <div class="card-glass">
-          <div class="section-title">
-            <span><i class="fa-solid fa-pen-to-square text-primary me-2"></i>New Trip Loading Entry</span>
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-pen-to-square text-primary me-2"></i>Nayi Trip Loading Entry</span>
+            <button class="btn btn-sm btn-outline-success fw-bold" onclick="openAddGrainModal()">+ Naya Anaj Add Karein</button>
           </div>
-          <form id="tripForm" onsubmit="saveTrip(event)">
+          <form id="tripLoadingForm" onsubmit="saveTripEntry(event)">
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Trip Date</label>
+              <label class="form-label small fw-semibold">Date (DD/MM/YYYY)</label>
               <input type="date" id="tripDate" class="form-control" required />
             </div>
+
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Village Dropdown (Palam Taluka - 115 Villages)</label>
-              <input type="text" list="villageOptions" id="tripVillage" class="form-control" placeholder="Search/Select Village" required />
+              <label class="form-label small fw-semibold">Village Name</label>
+              <input type="text" list="villageOptions" id="tripVillage" class="form-control" placeholder="Gaon select karein" required />
               <datalist id="villageOptions"></datalist>
             </div>
+
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Vehicle Select (Auto-fills Driver)</label>
-              <select id="tripVehicle" class="form-select" onchange="autoFillDriver()" required>
-                <option value="">-- Choose Vehicle --</option>
+              <label class="form-label small fw-semibold">Vehicle Number</label>
+              <select id="tripVehicle" class="form-select" onchange="autoFillTripDriver()" required>
+                <option value="">-- Vehicle Select Karein --</option>
               </select>
             </div>
+
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label small fw-semibold">Driver Name</label>
                 <input type="text" id="tripDriver" class="form-control bg-light" readonly placeholder="Auto-filled" />
               </div>
               <div class="col-6">
-                <label class="form-label small fw-semibold">Contact Phone</label>
+                <label class="form-label small fw-semibold">Driver Contact</label>
                 <input type="text" id="tripPhone" class="form-control bg-light" readonly placeholder="Auto-filled" />
               </div>
             </div>
 
-            <!-- Compulsory Grain Bags -->
+            <!-- Grain Breakdown -->
             <div class="p-3 bg-light rounded-3 mb-3 border">
-              <label class="form-label small fw-bold text-uppercase text-secondary mb-2">Compulsory Grain Breakdown (50kg Bags)</label>
-              <div class="row g-2">
+              <label class="form-label small fw-bold text-uppercase text-secondary mb-2">Anaj Bag Breakdown (50kg Bag Unit)</label>
+              <div class="row g-2" id="grainInputsContainer">
                 <div class="col-4">
                   <label class="form-label extra-small fw-semibold">Wheat Bags</label>
-                  <input type="number" id="wheatBags" class="form-control form-control-sm" value="0" />
+                  <input type="number" id="wheatBags" class="form-control form-control-sm" value="0" min="0" />
                 </div>
                 <div class="col-4">
                   <label class="form-label extra-small fw-semibold">Rice Bags</label>
-                  <input type="number" id="riceBags" class="form-control form-control-sm" value="0" />
+                  <input type="number" id="riceBags" class="form-control form-control-sm" value="0" min="0" />
                 </div>
                 <div class="col-4">
                   <label class="form-label extra-small fw-semibold">Sugar Bags</label>
-                  <input type="number" id="sugarBags" class="form-control form-control-sm" value="0" />
+                  <input type="number" id="sugarBags" class="form-control form-control-sm" value="0" min="0" />
                 </div>
               </div>
             </div>
@@ -149,23 +323,22 @@
                 <input type="number" id="ratePerBag" class="form-control" value="11" required />
               </div>
               <div class="col-6">
-                <label class="form-label small fw-semibold text-danger">Remaining / Pending Bags</label>
-                <input type="number" id="remainingBags" class="form-control" placeholder="Baki Bag" value="0" />
+                <label class="form-label small fw-semibold text-danger">Pending Bags (Baki Bag)</label>
+                <input type="number" id="remainingBags" class="form-control" value="0" placeholder="Remaining" />
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
-              <i class="fa-solid fa-floppy-disk me-2"></i>SAVE TRIP LOADING
+            <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold shadow-sm">
+              <i class="fa-solid fa-floppy-disk me-2"></i>Save Entry & Driver Ko SMS Bhejein
             </button>
           </form>
         </div>
       </div>
 
-      <!-- Trip Table -->
       <div class="col-12 col-lg-7">
-        <div class="card-glass">
-          <div class="section-title">
-            <span><i class="fa-solid fa-list text-primary me-2"></i>Active Trip Loading Entries</span>
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-truck-moving text-primary me-2"></i>Trip Loading Records</span>
           </div>
           <div class="table-responsive">
             <table class="table table-custom table-hover border align-middle text-center m-0">
@@ -174,8 +347,8 @@
                   <th>Date</th>
                   <th>Village</th>
                   <th>Vehicle / Driver</th>
-                  <th>Bags (W/R/S)</th>
-                  <th>Pending</th>
+                  <th>Grain Details</th>
+                  <th>Total Bags</th>
                   <th>Freight (₹)</th>
                   <th>Action</th>
                 </tr>
@@ -187,48 +360,140 @@
       </div>
     </div>
 
-    <!-- 2. PAYMENT & EXPENSE ENTRY PAGE -->
-    <div id="page-expenses" class="row g-4 hidden">
-      <div class="col-12 col-lg-4">
-        <div class="card-glass">
-          <div class="section-title">
-            <span><i class="fa-solid fa-receipt text-warning me-2"></i>Record Payment / Expense</span>
+    <!-- SECTION 2: RECEIVE & ISSUE ENTRY -->
+    <div id="section-receive" class="row g-4 hidden">
+      <div class="col-12 col-lg-5">
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-boxes-packing text-success me-2"></i>Nayi Receive & Issue Entry</span>
           </div>
-          <form id="expenseForm" onsubmit="saveExpense(event)">
+          <form id="receiveIssueForm" onsubmit="saveReceiveIssueEntry(event)">
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Expense Date</label>
-              <input type="date" id="expDate" class="form-control" required />
+              <label class="form-label small fw-semibold">Date (DD/MM/YYYY)</label>
+              <input type="date" id="riDate" class="form-control" required />
             </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Village Name</label>
+              <input type="text" list="villageOptions" id="riVillage" class="form-control" placeholder="Gaon select karein" required />
+            </div>
+
+            <!-- Receive Bag -->
+            <div class="row g-2 mb-3 bg-light p-2 rounded border">
+              <div class="col-5">
+                <label class="form-label small fw-semibold text-success">Receive Bag Count</label>
+                <input type="number" id="riReceiveBag" class="form-control" value="0" />
+              </div>
+              <div class="col-7">
+                <label class="form-label small fw-semibold">Receive Reason / Remarks</label>
+                <input type="text" id="riReceiveReason" class="form-control" placeholder="e.g. Center Jama" />
+              </div>
+            </div>
+
+            <!-- Issue Bag -->
+            <div class="row g-2 mb-3 bg-light p-2 rounded border">
+              <div class="col-5">
+                <label class="form-label small fw-semibold text-danger">Issue Bag Count</label>
+                <input type="number" id="riIssueBag" class="form-control" value="0" />
+              </div>
+              <div class="col-7">
+                <label class="form-label small fw-semibold">Issue Reason / Remarks</label>
+                <input type="text" id="riIssueReason" class="form-control" placeholder="e.g. Stock Re-issue" />
+              </div>
+            </div>
+
+            <!-- Amount Pay -->
+            <div class="row g-2 mb-3 bg-light p-2 rounded border">
+              <div class="col-5">
+                <label class="form-label small fw-semibold text-primary">Amount Pay (₹)</label>
+                <input type="number" id="riAmountPay" class="form-control" value="0" />
+              </div>
+              <div class="col-7">
+                <label class="form-label small fw-semibold">Payment Reason</label>
+                <input type="text" id="riAmountReason" class="form-control" placeholder="e.g. Center Payment" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-2.5 fw-bold shadow-sm">
+              <i class="fa-solid fa-paper-plane me-2"></i>Save Entry & SMS Alert Bhejein
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-list-check text-success me-2"></i>Receive & Issue Records</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-custom table-hover border align-middle text-center m-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Village</th>
+                  <th>Receive Bags</th>
+                  <th>Issue Bags</th>
+                  <th>Payment (₹)</th>
+                  <th>Remarks</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="receiveTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: DRIVER PAYMENT ENTRY -->
+    <div id="section-driver" class="row g-4 hidden">
+      <div class="col-12 col-lg-4">
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-hand-holding-dollar text-warning me-2"></i>Driver Payment Entry</span>
+          </div>
+          <form id="driverPaymentForm" onsubmit="saveDriverPaymentEntry(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Date (DD/MM/YYYY)</label>
+              <input type="date" id="dpDate" class="form-control" required />
+            </div>
+
             <div class="mb-3">
               <label class="form-label small fw-semibold">Vehicle Number</label>
-              <select id="expVehicle" class="form-select" required>
-                <option value="">-- Choose Vehicle --</option>
+              <select id="dpVehicle" class="form-select" required>
+                <option value="">-- Vehicle Select Karein --</option>
               </select>
             </div>
+
             <div class="mb-3">
               <label class="form-label small fw-semibold">Amount (₹)</label>
-              <input type="number" id="expAmount" class="form-control" placeholder="Amount in Rupees" required />
+              <input type="number" id="dpAmount" class="form-control" placeholder="e.g. 5000" required />
             </div>
+
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Category / Reason</label>
-              <select id="expCategory" class="form-select">
-                <option value="Diesel">Diesel</option>
-                <option value="Driver Advance">Driver Advance</option>
-                <option value="Maintenance">Maintenance / Repair</option>
-                <option value="Toll/Misc">Toll / Misc Charges</option>
+              <label class="form-label small fw-semibold">Payment Reason</label>
+              <select id="dpReasonSelect" class="form-select mb-2" onchange="checkCustomReason(this)">
+                <option value="Diesel">Diesel Payment</option>
+                <option value="Maintenance">Maintenance & Repair</option>
+                <option value="Driver Cash Advance">Driver Cash Advance</option>
+                <option value="Toll & Misc">Toll & Misc Expenses</option>
+                <option value="Custom">Custom Reason...</option>
               </select>
+              <input type="text" id="dpReasonCustom" class="form-control hidden" placeholder="Reason likhein" />
             </div>
-            <button type="submit" class="btn btn-warning w-100 py-2 fw-bold text-dark">
-              <i class="fa-solid fa-plus me-2"></i>SAVE EXPENSE ENTRY
+
+            <button type="submit" class="btn btn-warning w-100 py-2.5 fw-bold text-dark shadow-sm">
+              <i class="fa-solid fa-check-circle me-2"></i>Save Payment & SMS Bhejein
             </button>
           </form>
         </div>
       </div>
 
       <div class="col-12 col-lg-8">
-        <div class="card-glass">
-          <div class="section-title">
-            <span><i class="fa-solid fa-list-check text-warning me-2"></i>Expense Audit Records</span>
+        <div class="glass-card">
+          <div class="card-section-header">
+            <span><i class="fa-solid fa-receipt text-warning me-2"></i>Driver Payment Audit Logs</span>
           </div>
           <div class="table-responsive">
             <table class="table table-custom table-hover border align-middle text-center m-0">
@@ -236,86 +501,100 @@
                 <tr>
                   <th>Date</th>
                   <th>Vehicle Number</th>
-                  <th>Category / Reason</th>
+                  <th>Driver Name</th>
+                  <th>Reason</th>
                   <th>Amount Paid (₹)</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="expenseTableBody"></tbody>
+              <tbody id="driverPaymentTableBody"></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 3. MONTHLY LEDGERS & REPORTING -->
-    <div id="page-ledger" class="hidden">
+    <!-- SECTION 4: MONTHLY REPORTS & EXPORTS -->
+    <div id="section-reports" class="hidden">
+      
       <div class="card-glass mb-4">
         <div class="row g-3 align-items-end">
           <div class="col-12 col-md-4">
-            <label class="form-label small fw-semibold">Vehicle-wise Filter</label>
-            <select id="ledgerVehicleFilter" class="form-select" onchange="renderLedger()">
-              <option value="">-- All Hired Vehicles --</option>
+            <label class="form-label small fw-semibold">Report Type</label>
+            <select id="reportTypeSelect" class="form-select" onchange="renderActiveReport()">
+              <option value="trip">1. Trip Loading Monthly Report</option>
+              <option value="receive">2. Receive & Issue Monthly Report</option>
+              <option value="driver">3. Driver Payment Monthly Report</option>
             </select>
           </div>
-          <div class="col-12 col-md-4 d-flex gap-2">
-            <button class="btn btn-danger w-100 fw-bold" onclick="exportPDF()">
-              <i class="fa-solid fa-file-pdf me-2"></i>Export PDF
+          <div class="col-12 col-md-3">
+            <label class="form-label small fw-semibold">Vehicle Filter</label>
+            <select id="reportVehicleFilter" class="form-select" onchange="renderActiveReport()">
+              <option value="">-- All Vehicles --</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-5 d-flex gap-2">
+            <button class="btn btn-danger w-100 fw-bold" onclick="exportReportPDF()">
+              <i class="fa-solid fa-file-pdf me-2"></i>Letterhead PDF Download Karein
             </button>
-            <button class="btn btn-success w-100 fw-bold" onclick="exportExcel()">
-              <i class="fa-solid fa-file-excel me-2"></i>Export Excel
+            <button class="btn btn-success w-100 fw-bold" onclick="exportReportExcel()">
+              <i class="fa-solid fa-file-excel me-2"></i>Excel Download Karein
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Metrics -->
-      <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-          <div class="stat-card border-start border-4 border-success">
-            <span className="text-uppercase text-muted fw-bold small">Total Freight</span>
-            <h3 class="fw-bold text-success m-0 mt-1" id="totalFreightDisp">₹0</h3>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="stat-card border-start border-4 border-warning">
-            <span className="text-uppercase text-muted fw-bold small">Total Expenses</span>
-            <h3 class="fw-bold text-warning m-0 mt-1" id="totalExpenseDisp">₹0</h3>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="stat-card border-start border-4 border-primary">
-            <span className="text-uppercase text-muted fw-bold small">Final Net Profit</span>
-            <h3 class="fw-bold text-primary m-0 mt-1" id="netProfitDisp">₹0</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ledger Table -->
+      <!-- Report View Container -->
       <div class="card-glass">
-        <div class="section-title">
-          <span><i class="fa-solid fa-table text-primary me-2"></i>Monthly Vehicle Ledger Statement</span>
+        <div class="card-section-header">
+          <span id="reportTitleHeader"><i class="fa-solid fa-table text-primary me-2"></i>Trip Loading Statement</span>
         </div>
         <div class="table-responsive">
-          <table class="table table-custom table-hover border align-middle text-center m-0">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Date</th>
-                <th>Village Name</th>
-                <th>Vehicle</th>
-                <th>Wheat</th>
-                <th>Rice</th>
-                <th>Sugar</th>
-                <th>Total Bags</th>
-                <th>Remaining</th>
-                <th>Freight Earned (₹)</th>
-                <th>Expense (₹)</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
-            <tbody id="ledgerTableBody"></tbody>
+          <table class="table table-custom table-hover border align-middle text-center m-0" id="reportRenderTable">
+            <thead id="reportTableHead"></thead>
+            <tbody id="reportTableBody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASTER SETUP MODULE -->
+    <div id="section-masters" class="hidden">
+      <div class="row g-4">
+        <!-- Hired Vehicles Master -->
+        <div class="col-12 col-lg-6">
+          <div class="glass-card">
+            <div class="card-section-header">
+              <span><i class="fa-solid fa-truck-front text-primary me-2"></i>Vehicle & Driver Master</span>
+              <button class="btn btn-sm btn-primary fw-bold" onclick="openAddVehicleModal()">+ Vehicle Add Karein</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-custom border align-middle text-center">
+                <thead>
+                  <tr>
+                    <th>Vehicle Number</th>
+                    <th>Driver Name</th>
+                    <th>Contact Phone</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="vehicleMasterTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Village Master -->
+        <div class="col-12 col-lg-6">
+          <div class="glass-card">
+            <div class="card-section-header">
+              <span><i class="fa-solid fa-city text-primary me-2"></i>Village Master (<span id="villageCountBadge">116</span> Villages)</span>
+              <button class="btn btn-sm btn-success fw-bold" onclick="openAddVillageModal()">+ Gaon Add Karein</button>
+            </div>
+            <div style="max-height: 380px; overflow-y: auto;">
+              <ul class="list-group list-group-flush" id="villageMasterList"></ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -323,13 +602,119 @@
   </div>
 </div>
 
+<!-- MODALS -->
+
+<!-- SMS Log Modal -->
+<div class="modal fade" id="smsLogModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h6 class="modal-title fw-bold"><i class="fa-solid fa-comment-sms text-success me-2"></i>Automated SMS Alert Logs</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body bg-light" id="smsLogsContainer">
+        <div class="text-center text-muted p-3">Abhi koi SMS log nahi hai.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Taluka Registration Modal -->
+<div class="modal fade" id="talukaRegModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold"><i class="fa-solid fa-building-flag me-2"></i>New Taluka Registration Setup</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="talukaRegForm" onsubmit="saveNewTalukaRegistration(event)">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Taluka Name</label>
+              <input type="text" id="regTalukaName" class="form-control" placeholder="e.g. Gangakhed" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Contractor Name</label>
+              <input type="text" id="regContractorName" class="form-control" placeholder="FC Contractor & Transport" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Contractor Mobile</label>
+              <input type="text" id="regContractorPhone" class="form-control" placeholder="96655 25055" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Godown Manager Name</label>
+              <input type="text" id="regManagerName" class="form-control" placeholder="Manager Name" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Godown Manager Mobile</label>
+              <input type="text" id="regManagerPhone" class="form-control" placeholder="9822001122" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Vehicle & Driver Info</label>
+              <input type="text" id="regVehicleInfo" class="form-control" placeholder="e.g. MH 22N 1993 (Driver: BADI)" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Village List (Comma Separated)</label>
+              <textarea id="regVillageList" class="form-control" rows="3" placeholder="Sayangi, Parva, Pharkanda, Rahati..." required></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary fw-bold w-100">Registration Complete Karein</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-  // Data Masters
-  const VILLAGES = [
-    "1. Sayangi Bhu.", "2. Raorajur manchak", "3. Raorajur khandare", "4. Raorajur Sudhakar", "5. Dhanewadi", "6. Khulwadi", "7. Umrathadi", "8. Arkhed", "9. Someshwar", "10. Phala", "11. Pharkanda", "12. Digras chairman", "13. Digras kure", "14. Barbadi", "15. Sayangi Thadi", "16. Pimpalgaon Mu.", "17. Bhogav", "18. Rahati", "19. Dutka", "20. Gunj", "21. Parva", "22. Kharabdhanora", "23. Shekhrajur Deshmukh", "24. Shekhrajur chairman", "25. Wadi Bu. Trimbak", "26. Wadi Khu. Nivritti", "27. Gulkhand", "28. Jawala Pa.", "29. Ghoda", "30. Sirpur", "31. Sayala", "32. Rokdewadi", "33. Kapsi", "34. Aajmabad", "35. Ganeshwadi", "36. Puyani", "37. Palam bhutla", "38. Palam badam bai", "39. Palam bhode", "40. Palam Gaikwade", "41. Palam Amol", "42. Palam sakaram", "43. Palam Gautam", "44. Anjanwadi", "45. Pethshivni Savita", "46. Pethshivni Prashant", "47. Sategaon", "48. Selu suryabhan", "49. Selu Keshav", "50. Kolwadi", "51. Paidu Bu. Patale", "52. Paidu Khu. Khiraji", "53. Paidu Mu. Vitthal", "54. Paidu Bu. Pandit", "55. Sarfarazpur", "56. Pethpimpalgaon gulab", "57. Pethpimpalgaon Uttam", "58. Teljapur", "59. Aadgaon", "60. Kandalgaon", "61. Navlagaon", "62. Vanbhujwadi", "63. Anandwadi", "64. Chatori M B G", "65. Chatori Shivaji", "66. Nava", "67. Bandharwadi", "68. Khadi M B G", "69. Khadi dadewad", "70. Khoras Vilas", "71. Khoras sakaram", "72. Tambulgaon", "73. Sadlapur", "74. Sipegaon", "75. Mutkhed", "76. Umra", "77. Bhalkukadi", "78. Konerwadi", "79. Borgaon Bu. Rao Saheb", "80. Borgaon Bu. Hanumant", "81. Jogalgaon", "82. Ukkadgaon", "83. Varkhed", "84. Mojmabad Tanda", "85. Chorvad Deshmukh", "86. Pokharni Devi", "87. Borgaon Khu. Vilas", "88. Borgaon Khu. Subhash", "89. Martandwadi", "90. Mojmabad kadar", "91. Mojmabad bajgir", "92. Banvas Kiran Bedi", "93. Banvas Kai Balasaheb", "94. Girdharwadi", "95. Phatunaik Tanda", "96. Ramapur Tanda", "97. Ramapur", "98. Dongargaon", "99. Tandulwadi Rukmin", "100. Mahadevwadi", "101. Landkawadi", "102. Sadgirwadi", "103. Reva Tanda", "104. Vanwadi", "105. Phuttalav Tanda", "106. Sirsam", "107. Chatori Pathan", "108. Banvas Mathrubhumi", "109. Chorvad Sant", "110. Tandulwadi Swaraj", "111. Palam M B G", "112. Palam Swami", "113. Palam Pratibha", "114. Pethshivni Prabhu", "115. Navalgao"
+  // Global Configurations
+  const BRAND_MAIN_TITLE = "Grain Contractor & Transport";
+  const ADMIN_CONTACT = "8484990525";
+
+  // Taluka Masters
+  let talukasData = {
+    "Palam": {
+      contractorName: "FC Contractor & Transport",
+      contractorPhone: "96655 25055",
+      managerName: "Godown Manager Palam",
+      managerPhone: "9822001122"
+    }
+  };
+
+  // Pre-configured 116 Villages of Palam Taluka
+  let villages = [
+    "1. Sayangi", "2. Raorajur Manchak", "3. Raorajur Khandare", "4. Raorajur Sudhakar", "5. Dhanewadi", 
+    "6. Khulwadi", "7. Umrathadi", "8. Arkhed", "9. Someshwar", "10. Phala", "11. Pharkanda", 
+    "12. Digras Chairman", "13. Digras Kure", "14. Barbadi", "15. Sayangi Thadi", "16. Pimpalgaon Mu.", 
+    "17. Bhogav", "18. Rahati", "19. Dutka", "20. Gunj", "21. Parva", "22. Kharabdhanora", 
+    "23. Shekhrajur Deshmukh", "24. Shekhrajur Chairman", "25. Wadi Bu. Trimbak", "26. Wadi Khu. Nivritti", 
+    "27. Gulkhand", "28. Jawala Pa.", "29. Ghoda", "30. Sirpur", "31. Sayala", "32. Rokdewadi", 
+    "33. Kapsi", "34. Aajmabad", "35. Ganeshwadi", "36. Puyani", "37. Palam Bhutla", "38. Palam Badam bai", 
+    "39. Palam Bhode", "40. Palam Naikwade", "41. Palam Amol", "42. Palam Sakaram", "43. Palam Gautam", 
+    "44. Anjanwadi", "45. Pethshivni Savita", "46. Pethshivni Prashant", "47. Sategaon", "48. Selu Suryabhan", 
+    "49. Selu Keshav", "50. Kolwadi", "51. Paidu Bu. Patadhe", "52. Paidu Khu. Khiraji", "53. Paidu Mu. Vitthal", 
+    "54. Paidu Bu. Pandit", "55. Sarfarazpur", "56. Pethpimpalgaon Gulab", "57. Pethpimpalgaon Uttam", 
+    "58. Teljapur", "59. Aadgaon", "60. Kandalgaon", "61. Navlagaon", "62. Vanbhujwadi", "63. Anandwadi", 
+    "64. Chatori M B G", "65. Chatori Shivaji", "66. Nava", "67. Bandharwadi", "68. Khadi M B G", 
+    "69. Khadi Dadewad", "70. Khoras Vilas", "71. Khoras Sakaram", "72. Tambulgaon", "73. Sadlapur", 
+    "74. Sipegaon", "75. Mutkhed", "76. Umra", "77. Bhalkukadi", "78. Konerwadi", "79. Borgaon Bu. Rao Saheb", 
+    "80. Borgaon Bu. Hanumant", "81. Jogalgaon", "82. Ukkadgaon", "83. Varkhed", "84. Mojmabad Tanda", 
+    "85. Chorvad Deshmukh", "86. Pokharni Devi", "87. Borgaon Khu. Vilas", "88. Borgaon Khu. Subhash", 
+    "89. Martandwadi", "90. Mojmabad Kadar", "91. Mojmabad Bajgir", "92. Banvas Kiran Bedi", 
+    "93. Banvas Kai Balasaheb", "94. Girdharwadi", "95. Phatunaik Tanda", "96. Ramapur Tanda", 
+    "97. Ramapur", "98. Dongargaon", "99. Tandulwadi Rukmin", "100. Mahadevwadi", "101. Landkawadi", 
+    "102. Sadgirwadi", "103. Reva Tanda", "104. Vanwadi", "105. Phuttalav Tanda", "106. Sirsam", 
+    "107. Chatori Pathan", "108. Banvas Mathrubhumi", "109. Chorvad Sant", "110. Tandulwadi Swaraj", 
+    "111. Palam M B G", "112. Palam Swami", "113. Palam Pratibha", "114. Pethshivni Prabhu", 
+    "115. Navalgao M B G", "116. Papu"
   ];
 
-  const VEHICLES = [
+  // Pre-configured Primary Vehicles
+  let vehicles = [
     { number: "MH 22N 1993", driver: "BADI", phone: "9637227967" },
     { number: "MH 48AG 0768", driver: "PANKAJ", phone: "9637227967" },
     { number: "MH 16AY 7737", driver: "KISHAN", phone: "7620446047" },
@@ -337,25 +722,49 @@
     { number: "MH 04FP 0739", driver: "KALE", phone: "9011108603" }
   ];
 
-  let trips = [
-    { id: 1, date: '2026-08-23', village: '21. Parva', vehicle: 'MH 06AQ 6368', driver: 'ASHOK', phone: '9011108603', wheat: 100, rice: 120, sugar: 0, rate: 11, remaining: 5, freight: 2420 }
+  let dynamicCommodities = [];
+
+  // Data Stores
+  let tripLoadingEntries = [
+    { id: 1, date: '28/08/2026', taluka: 'Palam', village: '21. Parva', vehicle: 'MH 06AQ 6368', driver: 'ASHOK', phone: '9011108603', wheat: 100, rice: 120, sugar: 0, customGrains: {}, rate: 11, remaining: 5, totalBags: 220, freight: 2420 }
   ];
 
-  let expenses = [
-    { id: 1, date: '2026-08-23', vehicle: 'MH 06AQ 6368', amount: 500, category: 'Diesel' }
+  let receiveIssueEntries = [
+    { id: 1, date: '28/08/2026', taluka: 'Palam', village: '21. Parva', receiveBags: 10, receiveReason: 'Jama', issueBags: 0, issueReason: '-', amountPay: 0, amountReason: '-' }
   ];
 
-  // Login handler
+  let driverPaymentEntries = [
+    { id: 1, date: '28/08/2026', taluka: 'Palam', vehicle: 'MH 06AQ 6368', driver: 'ASHOK', amount: 5000, reason: 'Diesel' }
+  ];
+
+  let smsLogs = [];
+  let currentUser = { role: 'Admin', taluka: 'Palam' };
+
+  function toggleTalukaSelect() {
+    const role = document.getElementById('loginRole').value;
+    const group = document.getElementById('talukaSelectGroup');
+    if (role === 'Operator') {
+      group.classList.remove('hidden');
+    } else {
+      group.classList.add('hidden');
+    }
+  }
+
   document.getElementById('loginForm').onsubmit = function(e) {
     e.preventDefault();
+    const role = document.getElementById('loginRole').value;
     const u = document.getElementById('username').value;
     const p = document.getElementById('password').value;
-    if ((u === 'admin' && p === 'Admin@123') || (u === 'operator' && p === 'Operator@123')) {
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('dashboardScreen').classList.remove('hidden');
-      initApp();
+    const selTaluka = document.getElementById('loginTaluka').value;
+
+    if (role === 'Admin' && u === 'admin' && p === 'Admin@123') {
+      currentUser = { role: 'Admin', taluka: 'Palam' };
+      startApp();
+    } else if (role === 'Operator' && u === 'operator' && p === 'Operator@123') {
+      currentUser = { role: 'Operator', taluka: selTaluka };
+      startApp();
     } else {
-      alert('Galat Login! Username: admin / Password: Admin@123');
+      alert('Galat Credentials! Default: admin / Admin@123');
     }
   };
 
@@ -364,178 +773,573 @@
     document.getElementById('loginScreen').classList.remove('hidden');
   }
 
-  function initApp() {
-    // Populate Dropdowns
-    const vList = document.getElementById('villageOptions');
-    vList.innerHTML = VILLAGES.map(v => `<option value="${v}">`).join('');
+  function startApp() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboardScreen').classList.remove('hidden');
 
-    const vehSelects = [document.getElementById('tripVehicle'), document.getElementById('expVehicle'), document.getElementById('ledgerVehicleFilter')];
-    vehSelects.forEach(s => {
-      s.innerHTML = '<option value="">-- Select Vehicle --</option>' + VEHICLES.map(v => `<option value="${v.number}">${v.number} (${v.driver})</option>`).join('');
-    });
+    document.getElementById('roleDisplayBadge').innerHTML = `<i class="fa-solid fa-user-shield me-1"></i> Role: ${currentUser.role}`;
+    document.getElementById('talukaDisplayBadge').innerText = `Taluka: ${currentUser.taluka}`;
+
+    updateLetterheadBanner();
+    populateDropdowns();
 
     document.getElementById('tripDate').valueAsDate = new Date();
-    document.getElementById('expDate').valueAsDate = new Date();
+    document.getElementById('riDate').valueAsDate = new Date();
+    document.getElementById('dpDate').valueAsDate = new Date();
 
-    renderTrips();
-    renderExpenses();
-    renderLedger();
+    renderTripsTable();
+    renderReceiveTable();
+    renderDriverPaymentTable();
+    renderActiveReport();
+    renderMasterTables();
   }
 
-  function autoFillDriver() {
+  function updateLetterheadBanner() {
+    const info = talukasData[currentUser.taluka] || { contractorName: "FC Contractor & Transport", contractorPhone: "96655 25055" };
+    document.getElementById('letterheadSubHeader').innerText = `[${currentUser.taluka}] Contractor: ${info.contractorName} (Contact: ${info.contractorPhone})`;
+  }
+
+  function populateDropdowns() {
+    const vList = document.getElementById('villageOptions');
+    vList.innerHTML = villages.map(v => `<option value="${v}">`).join('');
+
+    const vehSelects = [document.getElementById('tripVehicle'), document.getElementById('dpVehicle'), document.getElementById('reportVehicleFilter')];
+    vehSelects.forEach(s => {
+      s.innerHTML = '<option value="">-- Select Vehicle --</option>' + vehicles.map(v => `<option value="${v.number}">${v.number} (${v.driver})</option>`).join('');
+    });
+  }
+
+  function autoFillTripDriver() {
     const vehNum = document.getElementById('tripVehicle').value;
-    const found = VEHICLES.find(v => v.number === vehNum);
+    const found = vehicles.find(v => v.number === vehNum);
     document.getElementById('tripDriver').value = found ? found.driver : '';
     document.getElementById('tripPhone').value = found ? found.phone : '';
   }
 
   function switchTab(tab) {
-    ['trips', 'expenses', 'ledger'].forEach(t => {
-      document.getElementById(`page-${t}`).classList.add('hidden');
+    ['trips', 'receive', 'driver', 'reports', 'masters'].forEach(t => {
+      document.getElementById(`section-${t}`).classList.add('hidden');
       document.getElementById(`tab-${t}`).classList.remove('active');
     });
-    document.getElementById(`page-${tab}`).classList.remove('hidden');
+    document.getElementById(`section-${tab}`).classList.remove('hidden');
     document.getElementById(`tab-${tab}`).classList.add('active');
   }
 
-  function saveTrip(e) {
+  // SMS Simulator
+  function sendSMS(recipient, phone, messageText) {
+    const timestamp = new Date().toLocaleString();
+    const log = { id: Date.now(), timestamp, recipient, phone, text: messageText };
+    smsLogs.unshift(log);
+    document.getElementById('smsCountBadge').innerText = smsLogs.length;
+
+    const container = document.getElementById('smsLogsContainer');
+    container.innerHTML = smsLogs.map(l => `
+      <div class="sms-log-item">
+        <div class="d-flex justify-content-between font-monospace text-muted extra-small">
+          <span><i class="fa-solid fa-paper-plane me-1"></i>TO: ${l.recipient} (${l.phone})</span>
+          <span>${l.timestamp}</span>
+        </div>
+        <div class="fw-semibold text-dark mt-1">${l.text}</div>
+      </div>
+    `).join('');
+  }
+
+  function showSmsLogModal() {
+    const modal = new bootstrap.Modal(document.getElementById('smsLogModal'));
+    modal.show();
+  }
+
+  // SECTION 1: TRIP LOADING ENTRY
+  function openAddGrainModal() {
+    const grainName = prompt("Naya anaj name likhein (e.g. Gram, Maize, Pulses):");
+    if (grainName && grainName.trim() !== "") {
+      const clean = grainName.trim();
+      if (!dynamicCommodities.includes(clean)) {
+        dynamicCommodities.push(clean);
+        renderGrainInputs();
+        alert(`Naya anaj "${clean}" form me add ho gaya!`);
+      }
+    }
+  }
+
+  function renderGrainInputs() {
+    const container = document.getElementById('grainInputsContainer');
+    let html = `
+      <div class="col-4">
+        <label class="form-label extra-small fw-semibold">Wheat Bags</label>
+        <input type="number" id="wheatBags" class="form-control form-control-sm" value="0" min="0" />
+      </div>
+      <div class="col-4">
+        <label class="form-label extra-small fw-semibold">Rice Bags</label>
+        <input type="number" id="riceBags" class="form-control form-control-sm" value="0" min="0" />
+      </div>
+      <div class="col-4">
+        <label class="form-label extra-small fw-semibold">Sugar Bags</label>
+        <input type="number" id="sugarBags" class="form-control form-control-sm" value="0" min="0" />
+      </div>
+    `;
+
+    dynamicCommodities.forEach(c => {
+      const cleanId = c.replace(/\s+/g, '_');
+      html += `
+        <div class="col-4 mt-2">
+          <label class="form-label extra-small fw-semibold text-primary">${c} Bags</label>
+          <input type="number" id="custom_grain_${cleanId}" data-grain="${c}" class="form-control form-control-sm custom-grain-input" value="0" min="0" />
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function saveTripEntry(e) {
     e.preventDefault();
+    const dateVal = document.getElementById('tripDate').value;
+    const villageVal = document.getElementById('tripVillage').value;
+    const vehVal = document.getElementById('tripVehicle').value;
+    const driverVal = document.getElementById('tripDriver').value;
+    const phoneVal = document.getElementById('tripPhone').value;
+    const rateVal = Number(document.getElementById('ratePerBag').value) || 11;
+
     const w = Number(document.getElementById('wheatBags').value) || 0;
     const r = Number(document.getElementById('riceBags').value) || 0;
     const s = Number(document.getElementById('sugarBags').value) || 0;
-    const rate = Number(document.getElementById('ratePerBag').value) || 11;
-    const totalBags = w + r + s;
 
-    const newTrip = {
+    let customGrains = {};
+    let customSum = 0;
+    document.querySelectorAll('.custom-grain-input').forEach(inp => {
+      const gName = inp.getAttribute('data-grain');
+      const val = Number(inp.value) || 0;
+      if (val > 0) {
+        customGrains[gName] = val;
+        customSum += val;
+      }
+    });
+
+    const grandTotalBags = w + r + s + customSum;
+    const calculatedFreight = grandTotalBags * rateVal;
+    const formattedDate = dateVal.split('-').reverse().join('/');
+
+    const newEntry = {
       id: Date.now(),
-      date: document.getElementById('tripDate').value,
-      village: document.getElementById('tripVillage').value,
-      vehicle: document.getElementById('tripVehicle').value,
-      driver: document.getElementById('tripDriver').value,
-      phone: document.getElementById('tripPhone').value,
+      date: formattedDate,
+      taluka: currentUser.taluka,
+      village: villageVal,
+      vehicle: vehVal,
+      driver: driverVal,
+      phone: phoneVal,
       wheat: w, rice: r, sugar: s,
-      rate: rate,
+      customGrains: customGrains,
+      rate: rateVal,
       remaining: Number(document.getElementById('remainingBags').value) || 0,
-      freight: totalBags * rate
+      totalBags: grandTotalBags,
+      freight: calculatedFreight
     };
 
-    trips.unshift(newTrip);
-    renderTrips();
-    renderLedger();
-    alert('Trip Entry Saved!');
+    tripLoadingEntries.unshift(newEntry);
+    renderTripsTable();
+    renderActiveReport();
+
+    // Trigger Driver Automated SMS
+    const smsMsg = `${formattedDate} Rozi ${vehVal} ye gadi ${villageVal} ko ${grandTotalBags} bag lekar gai hai`;
+    sendSMS(`Driver (${driverVal})`, phoneVal || 'Driver', smsMsg);
+
+    alert(`Trip entry save ho gayi! Driver (${driverVal}) ko SMS chala gaya.`);
   }
 
   function deleteTrip(id) {
-    trips = trips.filter(t => t.id !== id);
-    renderTrips();
-    renderLedger();
+    if (confirm("Is trip entry ko delete karein?")) {
+      tripLoadingEntries = tripLoadingEntries.filter(t => t.id !== id);
+      renderTripsTable();
+      renderActiveReport();
+    }
   }
 
-  function renderTrips() {
+  function renderTripsTable() {
     const tbody = document.getElementById('tripTableBody');
-    tbody.innerHTML = trips.map(t => `
-      <tr>
-        <td>${t.date}</td>
-        <td class="text-start">${t.village}</td>
-        <td><b>${t.vehicle}</b><br><small>${t.driver}</small></td>
-        <td>${t.wheat} / ${t.rice} / ${t.sugar}</td>
-        <td class="text-danger fw-bold">${t.remaining}</td>
-        <td class="text-success fw-bold">₹${t.freight}</td>
-        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteTrip(${t.id})"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>
-    `).join('');
-  }
+    const filtered = currentUser.role === 'Operator' ? tripLoadingEntries.filter(t => t.taluka === currentUser.taluka) : tripLoadingEntries;
 
-  function saveExpense(e) {
-    e.preventDefault();
-    const newExp = {
-      id: Date.now(),
-      date: document.getElementById('expDate').value,
-      vehicle: document.getElementById('expVehicle').value,
-      amount: Number(document.getElementById('expAmount').value),
-      category: document.getElementById('expCategory').value
-    };
-    expenses.unshift(newExp);
-    renderExpenses();
-    renderLedger();
-    alert('Expense Saved!');
-  }
-
-  function deleteExpense(id) {
-    expenses = expenses.filter(e => e.id !== id);
-    renderExpenses();
-    renderLedger();
-  }
-
-  function renderExpenses() {
-    const tbody = document.getElementById('expenseTableBody');
-    tbody.innerHTML = expenses.map(e => `
-      <tr>
-        <td>${e.date}</td>
-        <td><b>${e.vehicle}</b></td>
-        <td><span class="badge bg-light text-dark border">${e.category}</span></td>
-        <td class="text-warning fw-bold">₹${e.amount}</td>
-        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteExpense(${e.id})"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>
-    `).join('');
-  }
-
-  function renderLedger() {
-    const vehFilter = document.getElementById('ledgerVehicleFilter').value;
-    const tbody = document.getElementById('ledgerTableBody');
-    let compiled = [];
-
-    trips.forEach(t => {
-      if (!vehFilter || t.vehicle === vehFilter) {
-        compiled.push({ date: t.date, village: t.village, vehicle: t.vehicle, wheat: t.wheat, rice: t.rice, sugar: t.sugar, totalBags: t.wheat + t.rice + t.sugar, remaining: t.remaining, freight: t.freight, expense: 0, reason: '-' });
+    tbody.innerHTML = filtered.map(t => {
+      let bText = `W:${t.wheat} R:${t.rice} S:${t.sugar}`;
+      if (t.customGrains) {
+        for (let g in t.customGrains) bText += ` ${g}:${t.customGrains[g]}`;
       }
-    });
-
-    expenses.forEach(e => {
-      if (!vehFilter || e.vehicle === vehFilter) {
-        compiled.push({ date: e.date, village: '[EXPENSE]', vehicle: e.vehicle, wheat: 0, rice: 0, sugar: 0, totalBags: 0, remaining: 0, freight: 0, expense: e.amount, reason: e.category });
-      }
-    });
-
-    let totF = 0, totE = 0;
-    tbody.innerHTML = compiled.map((r, i) => {
-      totF += r.freight;
-      totE += r.expense;
       return `
         <tr>
-          <td>${i+1}</td>
-          <td>${r.date}</td>
-          <td class="text-start">${r.village}</td>
-          <td><b>${r.vehicle}</b></td>
-          <td>${r.wheat}</td>
-          <td>${r.rice}</td>
-          <td>${r.sugar}</td>
-          <td class="fw-bold">${r.totalBags}</td>
-          <td class="text-danger fw-bold">${r.remaining}</td>
-          <td class="text-success fw-bold">₹${r.freight}</td>
-          <td class="text-warning fw-bold">₹${r.expense}</td>
-          <td>${r.reason}</td>
+          <td>${t.date}</td>
+          <td class="text-start font-semibold">${t.village}</td>
+          <td><b>${t.vehicle}</b><br><small class="text-muted">${t.driver}</small></td>
+          <td><span class="badge bg-light text-dark border">${bText}</span></td>
+          <td class="fw-bold">${t.totalBags}</td>
+          <td class="text-success fw-bold">₹${t.freight}</td>
+          <td><button class="btn btn-sm btn-outline-danger" onclick="deleteTrip(${t.id})"><i class="fa-solid fa-trash"></i></button></td>
         </tr>
       `;
     }).join('');
-
-    document.getElementById('totalFreightDisp').innerText = `₹${totF}`;
-    document.getElementById('totalExpenseDisp').innerText = `₹${totE}`;
-    document.getElementById('netProfitDisp').innerText = `₹${totF - totE}`;
   }
 
-  function exportPDF() {
+  // SECTION 2: RECEIVE & ISSUE ENTRY
+  function saveReceiveIssueEntry(e) {
+    e.preventDefault();
+    const dateVal = document.getElementById('riDate').value;
+    const formattedDate = dateVal.split('-').reverse().join('/');
+    const villageVal = document.getElementById('riVillage').value;
+    const rBag = Number(document.getElementById('riReceiveBag').value) || 0;
+    const rReason = document.getElementById('riReceiveReason').value || 'Jama';
+    const iBag = Number(document.getElementById('riIssueBag').value) || 0;
+    const iReason = document.getElementById('riIssueReason').value || 'Issue';
+    const payAmt = Number(document.getElementById('riAmountPay').value) || 0;
+    const payReason = document.getElementById('riAmountReason').value || 'Payment';
+
+    const newEntry = {
+      id: Date.now(),
+      date: formattedDate,
+      taluka: currentUser.taluka,
+      village: villageVal,
+      receiveBags: rBag,
+      receiveReason: rReason,
+      issueBags: iBag,
+      issueReason: iReason,
+      amountPay: payAmt,
+      amountReason: payReason
+    };
+
+    receiveIssueEntries.unshift(newEntry);
+    renderReceiveTable();
+    renderActiveReport();
+
+    // Trigger Contractor & Manager Automated SMS
+    let smsSummary = "";
+    if (rBag > 0) smsSummary = `${rBag} Bag Jama Kiya`;
+    else if (iBag > 0) smsSummary = `${iBag} Bag Issue Kiya`;
+    else if (payAmt > 0) smsSummary = `RS ${payAmt} Payment Kiya`;
+    else smsSummary = "Entry Recorded";
+
+    const smsMsg = `${formattedDate} Ko ${villageVal} ne ${smsSummary}`;
+    const info = talukasData[currentUser.taluka] || { contractorPhone: "96655 25055", managerPhone: "9822001122" };
+    
+    sendSMS("Contractor", info.contractorPhone, smsMsg);
+    sendSMS("Godown Manager", info.managerPhone, smsMsg);
+
+    alert("Receive/Issue entry save ho gayi! Contractor aur Manager ko SMS chala gaya.");
+  }
+
+  function deleteReceiveEntry(id) {
+    if (confirm("Is record ko delete karein?")) {
+      receiveIssueEntries = receiveIssueEntries.filter(r => r.id !== id);
+      renderReceiveTable();
+      renderActiveReport();
+    }
+  }
+
+  function renderReceiveTable() {
+    const tbody = document.getElementById('receiveTableBody');
+    const filtered = currentUser.role === 'Operator' ? receiveIssueEntries.filter(r => r.taluka === currentUser.taluka) : receiveIssueEntries;
+
+    tbody.innerHTML = filtered.map(r => `
+      <tr>
+        <td>${r.date}</td>
+        <td class="text-start fw-semibold">${r.village}</td>
+        <td class="text-success fw-bold">${r.receiveBags}</td>
+        <td class="text-danger fw-bold">${r.issueBags}</td>
+        <td class="text-primary fw-bold">₹${r.amountPay}</td>
+        <td><small class="text-muted">${r.receiveReason} / ${r.issueReason} / ${r.amountReason}</small></td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteReceiveEntry(${r.id})"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  // SECTION 3: DRIVER PAYMENT ENTRY
+  function checkCustomReason(sel) {
+    const custInput = document.getElementById('dpReasonCustom');
+    if (sel.value === 'Custom') custInput.classList.remove('hidden');
+    else custInput.classList.add('hidden');
+  }
+
+  function saveDriverPaymentEntry(e) {
+    e.preventDefault();
+    const dateVal = document.getElementById('dpDate').value;
+    const formattedDate = dateVal.split('-').reverse().join('/');
+    const vehVal = document.getElementById('dpVehicle').value;
+    const amtVal = Number(document.getElementById('dpAmount').value);
+    
+    const selReason = document.getElementById('dpReasonSelect').value;
+    const reasonVal = selReason === 'Custom' ? document.getElementById('dpReasonCustom').value : selReason;
+
+    const foundVeh = vehicles.find(v => v.number === vehVal);
+    const driverName = foundVeh ? foundVeh.driver : 'Driver';
+    const driverPhone = foundVeh ? foundVeh.phone : 'Phone';
+
+    const newEntry = {
+      id: Date.now(),
+      date: formattedDate,
+      taluka: currentUser.taluka,
+      vehicle: vehVal,
+      driver: driverName,
+      amount: amtVal,
+      reason: reasonVal
+    };
+
+    driverPaymentEntries.unshift(newEntry);
+    renderDriverPaymentTable();
+    renderActiveReport();
+
+    // Trigger Driver Payment Automated SMS
+    const smsMsg = `${formattedDate} Rozi ${vehVal} ko RS ${amtVal} ka ${reasonVal} ke liye payment Kiya`;
+    const info = talukasData[currentUser.taluka] || { contractorPhone: "96655 25055" };
+
+    sendSMS(`Driver (${driverName})`, driverPhone, smsMsg);
+    sendSMS("Contractor", info.contractorPhone, smsMsg);
+
+    alert(`Driver payment record ho gaya! Driver (${driverName}) aur Contractor ko SMS chala gaya.`);
+  }
+
+  function deleteDriverPayment(id) {
+    if (confirm("Is driver payment ko delete karein?")) {
+      driverPaymentEntries = driverPaymentEntries.filter(d => d.id !== id);
+      renderDriverPaymentTable();
+      renderActiveReport();
+    }
+  }
+
+  function renderDriverPaymentTable() {
+    const tbody = document.getElementById('driverPaymentTableBody');
+    const filtered = currentUser.role === 'Operator' ? driverPaymentEntries.filter(d => d.taluka === currentUser.taluka) : driverPaymentEntries;
+
+    tbody.innerHTML = filtered.map(d => `
+      <tr>
+        <td>${d.date}</td>
+        <td><b>${d.vehicle}</b></td>
+        <td>${d.driver}</td>
+        <td><span class="badge bg-light text-dark border">${d.reason}</span></td>
+        <td class="text-warning fw-bold">₹${d.amount}</td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteDriverPayment(${d.id})"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  // SECTION 4: MONTHLY REPORTS & EXPORTS
+  function renderActiveReport() {
+    const type = document.getElementById('reportTypeSelect').value;
+    const vehFilter = document.getElementById('reportVehicleFilter').value;
+    const thead = document.getElementById('reportTableHead');
+    const tbody = document.getElementById('reportTableBody');
+    const headerTitle = document.getElementById('reportTitleHeader');
+
+    if (type === 'trip') {
+      headerTitle.innerHTML = `<i class="fa-solid fa-table text-primary me-2"></i>1. Trip Loading Monthly Report (${currentUser.taluka})`;
+      thead.innerHTML = `
+        <tr>
+          <th>Sr.No</th><th>Date</th><th>Village Name</th><th>Wheat (Bags)</th><th>Rice (Bags)</th><th>Sugar (Bags)</th><th>Other Grain Bags</th><th>Total Bags</th><th>Freight (₹)</th>
+        </tr>
+      `;
+
+      let filtered = currentUser.role === 'Operator' ? tripLoadingEntries.filter(t => t.taluka === currentUser.taluka) : tripLoadingEntries;
+      if (vehFilter) filtered = filtered.filter(t => t.vehicle === vehFilter);
+
+      tbody.innerHTML = filtered.map((t, i) => {
+        let customSum = 0;
+        if (t.customGrains) {
+          for (let g in t.customGrains) customSum += t.customGrains[g];
+        }
+        return `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${t.date}</td>
+            <td class="text-start fw-semibold">${t.village}</td>
+            <td>${t.wheat}</td>
+            <td>${t.rice}</td>
+            <td>${t.sugar}</td>
+            <td>${customSum}</td>
+            <td class="fw-bold">${t.totalBags}</td>
+            <td class="text-success fw-bold">₹${t.freight}</td>
+          </tr>
+        `;
+      }).join('');
+    } else if (type === 'receive') {
+      headerTitle.innerHTML = `<i class="fa-solid fa-boxes-packing text-success me-2"></i>2. Receive & Issue Monthly Report (${currentUser.taluka})`;
+      thead.innerHTML = `
+        <tr>
+          <th>Sr.No</th><th>Date</th><th>Village Name</th><th>Receive Bags</th><th>Issue Bags</th><th>Payment (₹)</th><th>Remarks</th>
+        </tr>
+      `;
+
+      const filtered = currentUser.role === 'Operator' ? receiveIssueEntries.filter(r => r.taluka === currentUser.taluka) : receiveIssueEntries;
+      tbody.innerHTML = filtered.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.date}</td>
+          <td class="text-start fw-semibold">${r.village}</td>
+          <td class="text-success fw-bold">${r.receiveBags}</td>
+          <td class="text-danger fw-bold">${r.issueBags}</td>
+          <td class="text-primary fw-bold">₹${r.amountPay}</td>
+          <td><small>${r.receiveReason} / ${r.issueReason} / ${r.amountReason}</small></td>
+        </tr>
+      `).join('');
+    } else if (type === 'driver') {
+      headerTitle.innerHTML = `<i class="fa-solid fa-hand-holding-dollar text-warning me-2"></i>3. Driver Payment Monthly Report (${currentUser.taluka})`;
+      thead.innerHTML = `
+        <tr>
+          <th>Sr.No</th><th>Date</th><th>Vehicle Number</th><th>Amount (₹)</th><th>Reason</th>
+        </tr>
+      `;
+
+      let filtered = currentUser.role === 'Operator' ? driverPaymentEntries.filter(d => d.taluka === currentUser.taluka) : driverPaymentEntries;
+      if (vehFilter) filtered = filtered.filter(d => d.vehicle === vehFilter);
+
+      tbody.innerHTML = filtered.map((d, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${d.date}</td>
+          <td><b>${d.vehicle}</b></td>
+          <td class="text-warning fw-bold">₹${d.amount}</td>
+          <td>${d.reason}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  // Digital Letterhead Header PDF Export
+  function exportReportPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("FC CONTRACTOR & TRANSPORT - PALAM LEDGER", 14, 15);
-    doc.autoTable({ html: '#ledgerTableBody', startY: 25 });
-    doc.save("Ledger_Report.pdf");
+    const type = document.getElementById('reportTypeSelect').value;
+    const info = talukasData[currentUser.taluka] || { contractorName: "FC Contractor & Transport", contractorPhone: "96655 25055" };
+
+    // --- DIGITAL LETTERHEAD HEADER ---
+    doc.setFontSize(16);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont("helvetica", "bold");
+    doc.text(BRAND_MAIN_TITLE.toUpperCase(), 14, 15);
+
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(71, 85, 105);
+    doc.text(`Admin Contact: ${ADMIN_CONTACT}`, 14, 21);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(30, 58, 138);
+    doc.text(`[${currentUser.taluka} Taluka] Contractor: ${info.contractorName} | Contact: ${info.contractorPhone}`, 14, 26);
+
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(37, 99, 235);
+    doc.line(14, 29, 196, 29);
+
+    let titleText = "Report Statement";
+    if (type === 'trip') titleText = `TRIP LOADING REPORT - ${currentUser.taluka.toUpperCase()}`;
+    else if (type === 'receive') titleText = `RECEIVE & ISSUE REPORT - ${currentUser.taluka.toUpperCase()}`;
+    else if (type === 'driver') titleText = `DRIVER PAYMENT REPORT - ${currentUser.taluka.toUpperCase()}`;
+
+    doc.setFontSize(11);
+    doc.setTextColor(15, 23, 42);
+    doc.text(titleText, 14, 36);
+
+    doc.autoTable({
+      html: '#reportRenderTable',
+      startY: 40,
+      theme: 'grid',
+      headStyles: { fillColor: [30, 58, 138] },
+      styles: { fontSize: 8 }
+    });
+
+    doc.save(`${titleText.replace(/\s+/g, '_')}.pdf`);
   }
 
-  function exportExcel() {
-    const table = document.querySelector("#page-ledger table");
+  function exportReportExcel() {
+    const table = document.querySelector("#reportRenderTable");
     const wb = XLSX.utils.table_to_book(table);
-    XLSX.writeFile(wb, "Ledger_Report.xlsx");
+    const type = document.getElementById('reportTypeSelect').value;
+    XLSX.writeFile(wb, `Report_${type}_${currentUser.taluka}.xlsx`);
+  }
+
+  // MASTER SETUP & REGISTRATION
+  function renderMasterTables() {
+    const vTbody = document.getElementById('vehicleMasterTableBody');
+    vTbody.innerHTML = vehicles.map((v, i) => `
+      <tr>
+        <td><b>${v.number}</b></td>
+        <td>${v.driver}</td>
+        <td>${v.phone}</td>
+        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle(${i})"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+
+    document.getElementById('villageCountBadge').innerText = villages.length;
+    const vList = document.getElementById('villageMasterList');
+    vList.innerHTML = villages.map((v, i) => `
+      <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+        <span class="small font-monospace">${v}</span>
+        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteVillage(${i})"><i class="fa-solid fa-times"></i></button>
+      </li>
+    `).join('');
+  }
+
+  function openAddVehicleModal() {
+    const num = prompt("Vehicle number likhein (e.g. MH 22AA 9999):");
+    if (!num) return;
+    const drv = prompt("Driver name likhein:");
+    const ph = prompt("Driver phone number likhein:");
+    if (num && drv) {
+      vehicles.push({ number: num.trim(), driver: drv.trim(), phone: ph ? ph.trim() : '' });
+      populateDropdowns();
+      renderMasterTables();
+      alert("Nayi vehicle master list me add ho gayi!");
+    }
+  }
+
+  function deleteVehicle(idx) {
+    if (confirm("Vehicle ko master list se delete karein?")) {
+      vehicles.splice(idx, 1);
+      populateDropdowns();
+      renderMasterTables();
+    }
+  }
+
+  function openAddVillageModal() {
+    const vName = prompt("Gaon ka naam likhein:");
+    if (vName && vName.trim() !== "") {
+      villages.push(vName.trim());
+      populateDropdowns();
+      renderMasterTables();
+    }
+  }
+
+  function deleteVillage(idx) {
+    if (confirm("Gaon ko list se delete karein?")) {
+      villages.splice(idx, 1);
+      populateDropdowns();
+      renderMasterTables();
+    }
+  }
+
+  function openTalukaRegistrationModal() {
+    const modal = new bootstrap.Modal(document.getElementById('talukaRegModal'));
+    modal.show();
+  }
+
+  function saveNewTalukaRegistration(e) {
+    e.preventDefault();
+    const tName = document.getElementById('regTalukaName').value.trim();
+    const cName = document.getElementById('regContractorName').value.trim();
+    const cPhone = document.getElementById('regContractorPhone').value.trim();
+    const mName = document.getElementById('regManagerName').value.trim();
+    const mPhone = document.getElementById('regManagerPhone').value.trim();
+
+    talukasData[tName] = {
+      contractorName: cName,
+      contractorPhone: cPhone,
+      managerName: mName,
+      managerPhone: mPhone
+    };
+
+    const select = document.getElementById('loginTaluka');
+    const opt = document.createElement('option');
+    opt.value = tName;
+    opt.innerText = `${tName} Taluka`;
+    select.appendChild(opt);
+
+    bootstrap.Modal.getInstance(document.getElementById('talukaRegModal')).hide();
+    alert(`Taluka "${tName}" ka registration complete ho gaya!`);
   }
 </script>
 
